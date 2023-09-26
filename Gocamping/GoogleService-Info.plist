@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>API_KEY</key>
+	<string>AIzaSyDB7F2JlLhVdOmPUDUU04aCOaXDnNbOC2k</string>
+	<key>GCM_SENDER_ID</key>
+	<string>515458752025</string>
+	<key>PLIST_VERSION</key>
+	<string>1</string>
+	<key>BUNDLE_ID</key>
+	<string>kang.Gocamping</string>
+	<key>PROJECT_ID</key>
+	<string>gocamping-399506</string>
+	<key>STORAGE_BUCKET</key>
+	<string>gocamping-399506.appspot.com</string>
+	<key>IS_ADS_ENABLED</key>
+	<false></false>
+	<key>IS_ANALYTICS_ENABLED</key>
+	<false></false>
+	<key>IS_APPINVITE_ENABLED</key>
+	<true></true>
+	<key>IS_GCM_ENABLED</key>
+	<true></true>
+	<key>IS_SIGNIN_ENABLED</key>
+	<true></true>
+	<key>GOOGLE_APP_ID</key>
+	<string>1:515458752025:ios:542be7c131e52e9a5f9488</string>
+	<key>DATABASE_URL</key>
+	<string>https://gocamping-399506-default-rtdb.firebaseio.com</string>
+</dict>
+</plist>

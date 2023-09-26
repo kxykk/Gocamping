@@ -1,19 +1,22 @@
 //
-//  ThirdViewController.swift
+//  LogVC.swift
 //  Gocamping
 //
-//  Created by 康 on 2023/7/24.
+//  Created by 康 on 2023/8/8.
 //
 
 import UIKit
 
-class ThirdViewController: UIViewController {
+class LogVC: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
 
         // Do any additional setup after loading the view.
     }
+
+        
+
     
 
     /*
