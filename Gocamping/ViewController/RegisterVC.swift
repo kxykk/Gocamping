@@ -6,12 +6,14 @@
 //
 
 import UIKit
+import SafariServices
+
 
 protocol RegisterVCDelegate: AnyObject {
     func registerSuccess()
 }
 
-class RegisterVC: UIViewController {
+class RegisterVC: UIViewController, SFSafariViewControllerDelegate {
     
     @IBOutlet weak var nameTextField: UITextField!
     @IBOutlet weak var comfirmPwTextField: UITextField!
@@ -20,45 +22,13 @@ class RegisterVC: UIViewController {
     @IBOutlet weak var emailTextField: UITextField!
     var eyeIconImageView: UIImageView!
 
-
+    let privacyURLString = "https://www.privacypolicies.com/live/75ffc95b-f6c4-449b-a3a0-a36496662f94"
     
-    weak var delegate: RegisterVCDelegate?
+    weak var registerDelegate: RegisterVCDelegate?
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        // Privacy policy
-        let privacyPolicyText = """
-        \nGocamping Privacy Policy
-
-        1.Introduction
-        Thank you for choosing Gocamping (hereinafter referred to as "our app" or "the app"). \n
-        We value your privacy and have created this Privacy Policy to explain how we collect, use, store, and protect your personal information.
-
-        2.Data Collection
-        Account Information
-        When you register within the app, we collect your username and password. This information is used for creating articles and comments.
-
-        3.Location Data
-        We use your location data to provide navigation services.
-
-        4.Data Usage
-        Articles and Comments
-        The articles and comments you create will be stored and made public for other users to view.
-
-        5.Data Storage and Security
-        All data is stored on our own server, which is located on our own computer. We only encrypt your password using bcrypt.hashpw.
-
-        6.User Rights
-        You have the right to access, correct, or delete your data within the app. If you wish to exercise these rights, you can do so directly within the app.
-
-        7.Policy Changes
-        If we make changes to this Privacy Policy, we will notify you on the app's homepage.
-
-        8.Contact Us
-        If you have any questions about this Privacy Policy, please contact us through gocamping919@gmail.com
-"""
-        ShowMessageManager.shared.showAlert(on: self, title: "Privacy policy", message: privacyPolicyText)
         
         eyeIconImageView = UIImageView(frame: CGRect(x: 0, y: 0, width: 24, height: 24))
         if let eyeIconImage = UIImage(named: "eye_icon") {
@@ -77,6 +47,14 @@ class RegisterVC: UIViewController {
     
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
         self.view.endEditing(true)
+    }
+    
+    func didTapPrivacy() {
+        if let url = URL(string: privacyURLString) {
+            let safari = SFSafariViewController(url: url)
+            safari.delegate = self
+            present(safari, animated: true, completion: nil)
+        }
     }
     
     @IBAction func registeBtnPressed(_ sender: Any) {
@@ -115,7 +93,7 @@ class RegisterVC: UIViewController {
                 ShowMessageManager.shared.showToast(on: self, message: "信箱已註冊過")
                 return
             } else {
-                self.delegate?.registerSuccess()
+                self.registerDelegate?.registerSuccess()
                 self.navigationController?.popViewController(animated: true)
             }
         }
@@ -126,6 +104,10 @@ class RegisterVC: UIViewController {
         let emailRegEx = "[A-Z0-9a-z._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,64}"
         let emailPred = NSPredicate(format:"SELF MATCHES %@", emailRegEx)
         return emailPred.evaluate(with: email)
+    }
+    
+    @IBAction func privacPolicyBtnPressed(_ sender: Any) {
+        didTapPrivacy()
     }
     
     @IBAction func showBtnPressed(_ sender: UIButton) {

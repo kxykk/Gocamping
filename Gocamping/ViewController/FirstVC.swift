@@ -6,6 +6,8 @@
 //
 
 import UIKit
+import Network
+
 
 class FirstViewController: UIViewController {
     
@@ -19,6 +21,8 @@ class FirstViewController: UIViewController {
     var lastSearchKeyword: String?
     var lastSearchResults: [Articles]?
     
+    let monitor = NWPathMonitor()
+
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -39,10 +43,6 @@ class FirstViewController: UIViewController {
         activityIndicator.hidesWhenStopped = true
         self.view.addSubview(activityIndicator)
         
-        // Show alert message
-        let title = "愛護自然"
-        let message = "親愛的露營愛好者，讓我們一同珍惜大自然的美麗。在享受戶外的同時，請記得愛護環境，將垃圾帶走。只有這樣，才能讓這片淨土永續美麗，讓未來的露營體驗依然如此迷人。"
-        ShowMessageManager.shared.showAlert(on: self, title: title, message: message)
         
         searchArticlesBar.delegate = self
         ServeoManager.shared.serveoGroup.notify(queue: .main) {
@@ -50,6 +50,18 @@ class FirstViewController: UIViewController {
                 self.getAllArticle()
             }
         }
+        // Network check
+        monitor.pathUpdateHandler = { path in
+            if path.status == .satisfied {
+                print("We're connected!")
+            } else {
+                DispatchQueue.main.async {
+                    ShowMessageManager.shared.showAlert(on: self, title: "網路連接失敗", message: "請檢查您的網絡設置")
+                }
+            }
+        }
+        let queue = DispatchQueue(label: "NetworkMonitor")
+        monitor.start(queue: queue)
 
         
         NotificationCenter.default.addObserver(self, selector: #selector(userDidLogout), name: Notification.Name("UserDidLogout"), object: nil)

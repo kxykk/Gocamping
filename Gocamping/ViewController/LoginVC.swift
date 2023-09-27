@@ -122,7 +122,7 @@ class LoginVC: UIViewController {
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         
         if let registerVC = segue.destination as? RegisterVC {
-            registerVC.delegate = self
+            registerVC.registerDelegate = self
         }
     }
     

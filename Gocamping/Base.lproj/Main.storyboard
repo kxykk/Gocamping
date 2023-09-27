@@ -445,7 +445,7 @@
                             <constraint firstItem="Atd-3K-TWp" firstAttribute="bottom" secondItem="TTw-8W-IZI" secondAttribute="bottom" id="w43-8a-l6I"/>
                         </constraints>
                     </view>
-                    <tabBarItem key="tabBarItem" title="搜尋露營地" id="vVo-by-1SL"/>
+                    <tabBarItem key="tabBarItem" title="搜尋露營地" image="camp" selectedImage="camp" id="vVo-by-1SL"/>
                     <connections>
                         <outlet property="SecondTableView" destination="Atd-3K-TWp" id="ezs-3G-AR5"/>
                         <outlet property="searchCampsBar" destination="m3Y-E1-oBm" id="hT6-9x-gK7"/>
@@ -967,7 +967,7 @@
                         <viewLayoutGuide key="safeArea" id="sO8-rq-29V"/>
                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                     </view>
-                    <tabBarItem key="tabBarItem" title="設定" id="r5e-fA-Rz9"/>
+                    <tabBarItem key="tabBarItem" title="設定" image="setting" selectedImage="setting" id="r5e-fA-Rz9"/>
                     <connections>
                         <outlet property="deleteAccountBtnPressed" destination="EbC-CX-kgO" id="8IN-P3-gHb"/>
                         <outlet property="iconImage" destination="hi4-CP-chb" id="8Z8-nT-bgu"/>
@@ -1188,6 +1188,22 @@
                                     <action selector="showBtnPressed:" destination="IO6-DC-ws0" eventType="touchUpInside" id="ObS-ck-1lB"/>
                                 </connections>
                             </button>
+                            <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="yL6-iY-GTw">
+                                <rect key="frame" x="25" y="750" width="137" height="35"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <state key="normal" title="Button"/>
+                                <buttonConfiguration key="configuration" style="plain" title="Privacy policy"/>
+                                <connections>
+                                    <action selector="privacPolicyBtnPressed:" destination="IO6-DC-ws0" eventType="touchUpInside" id="rkt-K3-qKo"/>
+                                </connections>
+                            </button>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="若完成註冊，即代表您同意Gocamping的" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="WJV-3h-Qq8">
+                                <rect key="frame" x="40" y="732" width="313" height="21"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <nil key="textColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
                         </subviews>
                         <viewLayoutGuide key="safeArea" id="wxa-wr-gCx"/>
                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
@@ -1456,7 +1472,7 @@
         <scene sceneID="6eH-EB-Uj3">
             <objects>
                 <navigationController automaticallyAdjustsScrollViewInsets="NO" id="KKR-OI-xuI" sceneMemberID="viewController">
-                    <tabBarItem key="tabBarItem" title="我的文章" id="0Dd-SA-tWs"/>
+                    <tabBarItem key="tabBarItem" title="我的文章" image="user" selectedImage="user" id="0Dd-SA-tWs"/>
                     <toolbarItems/>
                     <navigationBar key="navigationBar" contentMode="scaleToFill" id="Bmu-XJ-euW">
                         <rect key="frame" x="0.0" y="59" width="393" height="44"/>
@@ -1475,7 +1491,7 @@
         <scene sceneID="3hv-Ld-7cI">
             <objects>
                 <navigationController automaticallyAdjustsScrollViewInsets="NO" id="n6d-D5-NcL" sceneMemberID="viewController">
-                    <tabBarItem key="tabBarItem" title="文章列表" id="iGV-7o-PFh"/>
+                    <tabBarItem key="tabBarItem" title="文章列表" image="article" selectedImage="article" id="iGV-7o-PFh"/>
                     <toolbarItems/>
                     <navigationBar key="navigationBar" contentMode="scaleToFill" id="vSV-Xp-gpY">
                         <rect key="frame" x="0.0" y="59" width="393" height="44"/>
@@ -1499,7 +1515,7 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="vPP-6Z-LfK">
-                                <rect key="frame" x="126" y="311" width="142" height="35"/>
+                                <rect key="frame" x="126" y="311" width="93.333333333333314" height="35"/>
                                 <state key="normal" title="Button"/>
                                 <buttonConfiguration key="configuration" style="plain" title="選擇照片"/>
                                 <connections>
@@ -1507,14 +1523,14 @@
                                 </connections>
                             </button>
                             <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" text="請輸入自我介紹..." textAlignment="natural" translatesAutoresizingMaskIntoConstraints="NO" id="H2o-Y4-Nwu">
-                                <rect key="frame" x="130.66666666666669" y="371" width="232.66666666666669" height="271"/>
+                                <rect key="frame" x="130.66666666666666" y="371" width="183.99999999999997" height="271"/>
                                 <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                                 <color key="textColor" systemColor="labelColor"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="16"/>
                                 <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
                             </textView>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="vcx-Ra-Lvj">
-                                <rect key="frame" x="167.33333333333334" y="734" width="58.666666666666657" height="35"/>
+                                <rect key="frame" x="143" y="734" width="58.666666666666657" height="35"/>
                                 <state key="normal" title="Button"/>
                                 <buttonConfiguration key="configuration" style="gray" title="確認"/>
                                 <connections>
@@ -1522,7 +1538,7 @@
                                 </connections>
                             </button>
                             <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="bKw-pU-HuN">
-                                <rect key="frame" x="59" y="103" width="273.33333333333331" height="200"/>
+                                <rect key="frame" x="58.999999999999986" y="103" width="224.66666666666663" height="200"/>
                                 <constraints>
                                     <constraint firstAttribute="width" constant="200" id="4BQ-qs-SMK"/>
                                     <constraint firstAttribute="height" constant="200" id="M0x-ns-nNk"/>
@@ -1575,7 +1591,11 @@
         <segue reference="Ujm-AX-HEJ"/>
     </inferredMetricsTieBreakers>
     <resources>
+        <image name="article" width="25" height="25"/>
+        <image name="camp" width="25" height="25"/>
         <image name="ellipsis.circle.fill" catalog="system" width="128" height="123"/>
+        <image name="setting" width="25" height="25"/>
+        <image name="user" width="25" height="25"/>
         <systemColor name="labelColor">
             <color red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
         </systemColor>
