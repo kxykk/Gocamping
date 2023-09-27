@@ -1,0 +1,104 @@
+.
+├── __pycache__
+│   ├── database.cpython-311.pyc
+│   ├── main.cpython-311.pyc
+│   ├── models.cpython-311.pyc
+│   ├── routers.cpython-311.pyc
+│   └── schemas.cpython-311.pyc
+├── api
+│   ├── article
+│   │   ├── __pycache__
+│   │   │   ├── articleModel.cpython-311.pyc
+│   │   │   ├── article_model.cpython-311.pyc
+│   │   │   ├── article_routes.cpython-311.pyc
+│   │   │   └── article_schema.cpython-311.pyc
+│   │   ├── article_crud.py
+│   │   ├── article_model.py
+│   │   ├── article_routes.py
+│   │   └── article_schema.py
+│   ├── article_collection
+│   │   ├── __pycache__
+│   │   │   ├── articel_collection_routes.cpython-311.pyc
+│   │   │   ├── articleCollectionModel.cpython-311.pyc
+│   │   │   ├── article_collection_model.cpython-311.pyc
+│   │   │   └── article_collection_schema.cpython-311.pyc
+│   │   ├── articel_collection_routes.py
+│   │   ├── article_collection_crud.py
+│   │   ├── article_collection_model.py
+│   │   └── article_collection_schema.py
+│   ├── camp
+│   │   ├── __pycache__
+│   │   │   ├── campModel.cpython-311.pyc
+│   │   │   ├── camp_model.cpython-311.pyc
+│   │   │   ├── camp_routes.cpython-311.pyc
+│   │   │   └── camp_schema.cpython-311.pyc
+│   │   ├── camp_crud.py
+│   │   ├── camp_model.py
+│   │   ├── camp_routes.py
+│   │   └── camp_schema.py
+│   ├── comment
+│   │   ├── __pycache__
+│   │   │   ├── commentModel.cpython-311.pyc
+│   │   │   ├── comment_model.cpython-311.pyc
+│   │   │   ├── comment_routes.cpython-311.pyc
+│   │   │   └── comment_schema.cpython-311.pyc
+│   │   ├── comment_crud.py
+│   │   ├── comment_model.py
+│   │   ├── comment_routes.py
+│   │   └── comment_schema.py
+│   ├── follower
+│   │   ├── __pycache__
+│   │   │   ├── followerModel.cpython-311.pyc
+│   │   │   ├── follower_model.cpython-311.pyc
+│   │   │   ├── follower_routes.cpython-311.pyc
+│   │   │   └── follower_schema.cpython-311.pyc
+│   │   ├── follower_crud.py
+│   │   ├── follower_model.py
+│   │   ├── follower_routes.py
+│   │   └── follower_schema.py
+│   ├── following
+│   │   ├── __pycache__
+│   │   │   ├── followingModel.cpython-311.pyc
+│   │   │   ├── following_model.cpython-311.pyc
+│   │   │   ├── following_routes.cpython-311.pyc
+│   │   │   └── following_schema.cpython-311.pyc
+│   │   ├── following_crud.py
+│   │   ├── following_model.py
+│   │   ├── following_routes.py
+│   │   └── following_schema.py
+│   ├── image
+│   │   ├── __pycache__
+│   │   │   ├── imageModel.cpython-311.pyc
+│   │   │   ├── image_model.cpython-311.pyc
+│   │   │   ├── image_routes.cpython-311.pyc
+│   │   │   └── image_schema.cpython-311.pyc
+│   │   ├── image_crud.py
+│   │   ├── image_model.py
+│   │   ├── image_routes.py
+│   │   └── image_schema.py
+│   ├── text
+│   │   ├── __pycache__
+│   │   │   ├── textModel.cpython-311.pyc
+│   │   │   ├── text_model.cpython-311.pyc
+│   │   │   ├── text_routes.cpython-311.pyc
+│   │   │   └── text_schema.cpython-311.pyc
+│   │   ├── text_crud.py
+│   │   ├── text_model.py
+│   │   ├── text_routes.py
+│   │   └── text_schema.py
+│   └── user
+│       ├── __pycache__
+│       │   ├── userModel.cpython-311.pyc
+│       │   ├── user_model.cpython-311.pyc
+│       │   ├── user_routes.cpython-311.pyc
+│       │   ├── user_schema.cpython-311.pyc
+│       │   └── user_schemas.cpython-311.pyc
+│       ├── user_crud.py
+│       ├── user_model.py
+│       ├── user_routes.py
+│       └── user_schema.py
+├── database.py
+├── main.py
+└── output.txt
+
+21 directories, 81 files
