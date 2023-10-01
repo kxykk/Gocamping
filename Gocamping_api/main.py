@@ -22,32 +22,40 @@ from subprocess import run, PIPE, Popen
 
 app = FastAPI()
 serveo_url = None
-
+MAX_RETRIES = 100
+RETRY_DELAY = 5  
 
 def start_serveo():
     global serveo_url
-    
+    retries = 0
+
     # 延遲啟動 autossh
     time.sleep(3)
-    
-    process = Popen(["autossh", "-M", "0", "-R", "80:localhost:8000", "serveo.net"], stdout=PIPE, stderr=PIPE, text=True)
-    
-    while True:
-        output = process.stdout.readline().strip()
-        match = re.search(r"Forwarding HTTP traffic from (.*)", output)
-        if match:
-            serveo_url = match.group(1)
-            print(f"Serveo URL is {serveo_url}")
-            
-            # 將 URL 寫入 Firebase
-            print(f"Writing {serveo_url} to Firebase")  
-            db.child("serveo_urls").child("url").set(serveo_url)
-            print(f"Wrote {serveo_url} to Firebase")  
-            break
-        elif not output:
-            break
-        else:
-            print(f"Waiting for Serveo URL...")
+
+    while retries < MAX_RETRIES:
+        process = Popen(["/opt/homebrew/bin/autossh", "-M", "0", "-R", "80:localhost:8000", "serveo.net"], stdout=PIPE, stderr=PIPE, text=True)
+
+        
+        while True:
+            output = process.stdout.readline().strip()
+            match = re.search(r"Forwarding HTTP traffic from (.*)", output)
+            if match:
+                serveo_url = match.group(1)
+                print(f"Serveo URL is {serveo_url}")
+                
+                # 將 URL 寫入 Firebase
+                print(f"Writing {serveo_url} to Firebase")  
+                db.child("serveo_urls").child("url").set(serveo_url)
+                print(f"Wrote {serveo_url} to Firebase")  
+                return
+            elif not output:
+                break
+            else:
+                print(f"Waiting for Serveo URL...")
+        
+        retries += 1
+        print(f"Retrying in {RETRY_DELAY} seconds...")
+        time.sleep(RETRY_DELAY)
 
 
 

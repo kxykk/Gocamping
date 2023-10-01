@@ -14,13 +14,16 @@ class ShowCommentCell: UITableViewCell {
     
     @IBOutlet weak var usernameLabel: UILabel!
     
+    @IBOutlet weak var editCommentBtnPressed: UIButton!
     
     override func awakeFromNib() {
         super.awakeFromNib()
         // Initialization code
         
     }
-
+    override func prepareForReuse() {
+        editCommentBtnPressed.isHidden = true
+    }
 
 
 }

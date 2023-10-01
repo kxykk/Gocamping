@@ -13,7 +13,7 @@ class GooglePlacesmanager {
     static let shared = GooglePlacesmanager()
     private init() {}
     
-    private let apiKey = "AIzaSyDVJHn2Xi5nhzoeXtq3dGi4FSsFMyU-RE0"
+    private let apiKey = ""
     
     func fetchPlaceID(keyword: String, completion: @escaping (String?) -> Void) {
         let urlString = "https://maps.googleapis.com/maps/api/place/findplacefromtext/json"

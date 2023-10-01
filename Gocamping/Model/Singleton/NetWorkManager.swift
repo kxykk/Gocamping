@@ -15,7 +15,13 @@ class NetworkManager {
     
     static let shared = NetworkManager()
     
-    private init() {}
+    private var session: Session
+    
+    private init() {
+        let retrier = CustomsRetrier()
+        session = Session(interceptor: retrier as? RequestInterceptor)
+    }
+    
     
     let emailKey = "email"
     let passwordKey = "password"
@@ -44,7 +50,7 @@ class NetworkManager {
     let keywordKey = "keyword"
     let campNameKey = "camp_name"
     
-    static var baseURL: String = "http://localhost:8000"
+    static var baseURL: String = "http://139.162.98.222:8000"
     //let serveoURL = "https://xiphias.serveo.net" // Serveo
     var userURL = baseURL + "/user/"
     var searchUserURL = baseURL + "/user/search/"
@@ -61,7 +67,7 @@ class NetworkManager {
     var getCampImageURL = baseURL + "/image/get_google_place_image/"
     var getMyArticleURL = baseURL + "/article/by_user_id/"
     var getDetailsByArticleIDURL = baseURL + "/article/details/"
-    var postCommentURL = baseURL + "/comment/"
+    var CommentURL = baseURL + "/comment/"
     var getCommentByArticleIDURL = baseURL + "/comment/by_article_id/"
     var deleteArticleContentURL = baseURL + "/article/delete_content/"
     var putUserIntroductionURL = baseURL + "/user/introduction/"
@@ -69,37 +75,7 @@ class NetworkManager {
     var getCollectedArticleURL = baseURL + "/article_collection/articles_by_userid/"
     var searchArticleURL = baseURL + "/article/search/"
     var searchCamps = baseURL + "/camp/search/"
-    var saveImageURL = "/Users/kang/Desktop/gocamping/pictures/"
-    
-    func updateBaseURL(newBaseURL: String) {
-        NetworkManager.baseURL = newBaseURL
-        
-        
-        userURL = NetworkManager.baseURL + "/user/"
-        searchUserURL = NetworkManager.baseURL + "/user/search/"
-        articleURL = NetworkManager.baseURL + "/article/"
-        sentPhotoURL = NetworkManager.baseURL + "/image/upload/"
-        textURL = NetworkManager.baseURL + "/text/"
-        imageURL = NetworkManager.baseURL + "/image/"
-        loginURL = NetworkManager.baseURL + "/user/login/"
-        getAllArticleURL = NetworkManager.baseURL + "/article/all_ids_and_titles/"
-        getImageURL = NetworkManager.baseURL + "/image/get/"
-        getImageByUserID = NetworkManager.baseURL + "/image/get_by_user/"
-        getUserByArticleIDURL = NetworkManager.baseURL + "/user/by_article/"
-        getCampURL = NetworkManager.baseURL + "/camp/"
-        getCampImageURL = NetworkManager.baseURL + "/image/get_google_place_image/"
-        getMyArticleURL = NetworkManager.baseURL + "/article/by_user_id/"
-        getDetailsByArticleIDURL = NetworkManager.baseURL + "/article/details/"
-        postCommentURL = NetworkManager.baseURL + "/comment/"
-        getCommentByArticleIDURL = NetworkManager.baseURL + "/comment/by_article_id/"
-        deleteArticleContentURL = NetworkManager.baseURL + "/article/delete_content/"
-        putUserIntroductionURL = NetworkManager.baseURL + "/user/introduction/"
-        CollectionURL = NetworkManager.baseURL + "/article_collection/"
-        getCollectedArticleURL = NetworkManager.baseURL + "/article_collection/articles_by_userid/"
-        searchArticleURL = NetworkManager.baseURL + "/article/search/"
-        searchCamps = NetworkManager.baseURL + "/camp/search/"
-    }
-
+    var saveImageURL = "/root/Gocamping_api/pictures/"
 
     
     //MARK: Post
@@ -155,7 +131,7 @@ class NetworkManager {
             formData.append(imageType.data(using: .utf8)!, withName: imageTypeKey)
         }
         
-        AF.upload(multipartFormData: prepareFormData(formData:), to: sentPhotoURL).responseDecodable { (response: DataResponse<ServerResult, AFError>) in
+        session.upload(multipartFormData: prepareFormData(formData:), to: sentPhotoURL).responseDecodable { (response: DataResponse<ServerResult, AFError>) in
             self.handleResponse(response: response, completion: completion)
         }
         
@@ -200,7 +176,7 @@ class NetworkManager {
         
         let parameters = [articleIDKey: articleID, userIDKey: userID, commentKey: comment] as [String : Any]
         
-        doPost(postCommentURL, parameters: parameters, completion: completion)
+        doPost(CommentURL, parameters: parameters, completion: completion)
         
     }
     
@@ -300,7 +276,7 @@ class NetworkManager {
     //MARK: Download
     func downloadImage(imageURL: String, completion: @escaping DownloadHandler) {
         let fileURL = NetworkManager.baseURL + saveImageURL + imageURL
-        AF.request(fileURL).responseData { response in
+        session.request(fileURL).responseData { response in
             switch response.result {
             case .success(let data):
                 completion(data, nil)
@@ -315,7 +291,7 @@ class NetworkManager {
             print("Download fail!")
             return
         }
-        AF.request(imageURL).responseData { response in
+        session.request(imageURL).responseData { response in
             switch response.result {
             case .success(let data):
                 completion(data, nil)
@@ -348,6 +324,11 @@ class NetworkManager {
         doDelete(finalURL, completion: completion)
     }
     
+    func deleteComment(commentID: Int, completion: DoneHandler?) {
+        let finalURL = CommentURL + String(commentID)
+        doDelete(finalURL, completion: completion)
+    }
+    
     //MARK: Update
     func updateArticleContent(articleID: Int, newContent: [Content], completion: DoneHandler?) {
         deleteArticleContent(articleID: articleID) { result, statusCode, error in
@@ -369,7 +350,7 @@ class NetworkManager {
     //MARK: CRUD
     func doPost(_ urlString: String, parameters: [String: Any], completion: DoneHandler?) {
         
-        AF.request(urlString,
+        session.request(urlString,
                    method: .post,
                    parameters: parameters,
                    encoding: JSONEncoding.default).responseDecodable {
@@ -382,7 +363,7 @@ class NetworkManager {
     
     private func doGetWithParameters(_ urlString: String, parameters: [String: Any], completion: @escaping DoneHandler) {
         
-        AF.request(urlString,
+        session.request(urlString,
                    method: .get,
                    parameters: parameters,
                    encoding:URLEncoding.default).responseDecodable {
@@ -395,7 +376,7 @@ class NetworkManager {
     
     private func doGet(_ urlString: String, completion: @escaping DoneHandler) {
         
-        AF.request(urlString,
+        session.request(urlString,
                    method: .get,
                    encoding:URLEncoding.default).responseDecodable {
             (response: DataResponse<ServerResult, AFError>) in
@@ -406,7 +387,7 @@ class NetworkManager {
     }
     
     private func doPut(_ urlString: String, parameters: [String: Any], completion: DoneHandler?) {
-        AF.request(urlString,
+        session.request(urlString,
                    method: .put,
                    parameters: parameters,
                    encoding: JSONEncoding.default).responseDecodable {
@@ -417,7 +398,7 @@ class NetworkManager {
     
     private func doDelete(_ urlString: String, completion: DoneHandler?) {
         
-        AF.request(urlString,
+        session.request(urlString,
                    method: .delete).responseDecodable {
             (response: DataResponse<ServerResult, AFError>) in
             self.handleResponse(response: response, completion: completion)
@@ -476,4 +457,15 @@ struct ServerResult: Decodable {
         case statusCode
     }
 }
+
+struct CustomsRetrier: RequestRetrier {
+    func retry(_ request: Alamofire.Request, for session: Alamofire.Session, dueTo error: Error, completion: @escaping (Alamofire.RetryResult) -> Void) {
+        if request.retryCount < 3 {
+            completion(.retryWithDelay(3.0))
+        } else {
+            completion(.doNotRetry)
+        }
+    }
+}
+
 

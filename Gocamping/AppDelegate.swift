@@ -22,24 +22,21 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     
         FirebaseApp.configure()
             
-        ServeoManager.shared.serveoGroup.enter()
-        let ref = Database.database().reference()
-        ref.child("serveo_urls").child("url").observeSingleEvent(of: .value) { snapshot in
-            if let serveoURL = snapshot.value as? String {
-                let cleanedServeoURL = serveoURL.trimmingCharacters(in: .whitespacesAndNewlines)
-                ServeoManager.shared.setServeoURL(cleanedServeoURL)
-                ServeoManager.shared.updateNetworkManagerBaseURL()
-                print("成功取得 serveoURL: \(cleanedServeoURL)")
-                ServeoManager.shared.serveoGroup.leave()
-            } else {
-                print("無法取得 serveoURL")
-                ServeoManager.shared.serveoGroup.leave()
-            }
-
-        }
-        
+//        ServeoManager.shared.serveoGroup.enter()
+//        let ref = Database.database().reference()
+//        ref.child("serveo_urls").child("url").observeSingleEvent(of: .value) { snapshot in
+//            if let serveoURL = snapshot.value as? String {
+//                let cleanedServeoURL = serveoURL.trimmingCharacters(in: .whitespacesAndNewlines)
+//                ServeoManager.shared.setServeoURL(cleanedServeoURL)
+//                ServeoManager.shared.updateNetworkManagerBaseURL()
+//                print("成功取得 serveoURL: \(cleanedServeoURL)")
+//                ServeoManager.shared.serveoGroup.leave()
+//            } else {
+//                print("無法取得 serveoURL")
+//                ServeoManager.shared.serveoGroup.leave()
+//            }
+//        }
         return true
-
     }
 
     // MARK: UISceneSession Lifecycle

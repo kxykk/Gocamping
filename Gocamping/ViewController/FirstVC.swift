@@ -84,10 +84,7 @@ class FirstViewController: UIViewController {
         NetworkManager.shared.getAllArticleIDandTitle { result, statusCode, error in
             if let articles = result?.articles {
                 ArticleManager.shared.allArticle = articles
-                
                 for article in articles {
-                    
-                    
                     group.enter()
                     // Get all users by article information.
                     NetworkManager.shared.getUserByArticleID(articleID: article.article_id) { result, statusCode, error in

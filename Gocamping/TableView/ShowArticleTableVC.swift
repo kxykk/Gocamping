@@ -25,7 +25,7 @@ class ShowArticleTableVC: UITableViewController {
     
     
     @IBOutlet weak var collectedBtnPressed: UIBarButtonItem!
-    
+
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -172,8 +172,7 @@ class ShowArticleTableVC: UITableViewController {
             self.tableView.reloadSections(sections as IndexSet, with: .automatic)
         }
     }
-    
-    
+
     @IBAction func collectedBtnPressed(_ sender: Any) {
         
         userID = UserDefaults.standard.integer(forKey: userIDKey)
@@ -246,11 +245,6 @@ class ShowArticleTableVC: UITableViewController {
             }
             if let user = result?.user {
                 self.userName = user.name
-                //                if self.userID == user.user_id {
-                //                    self.collectedBtnPressed.isHidden = true
-                //                } else {
-                //                    self.collectedBtnPressed.isHidden = false
-                //                }
                 if self.userID == user.user_id {
                     self.navigationItem.rightBarButtonItems = nil
                 } else {
@@ -261,7 +255,29 @@ class ShowArticleTableVC: UITableViewController {
         
     }
     
+    @objc func editCommentBtnPressed(_ sender: UIButton) {
+        let row = sender.tag
+        let selectedComment = comments[row]
+        let commentID = selectedComment.comment_id
+        
+        let alertSheet = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
+        let deleteAction = UIAlertAction(title: "刪除", style: .default) {_ in
+            NetworkManager.shared.deleteComment(commentID: commentID) { result, statusCode, error in
+                if let result = result {
+                    self.comments.remove(at: row)
+                    DispatchQueue.main.async {
+                        self.tableView.reloadData()
+                        ShowMessageManager.shared.showToast(on: self, message: "刪除成功")
+                    }
+                }
+            }
+        }
+        let cancelAction = UIAlertAction(title: "取消", style: .cancel)
+        alertSheet.addAction(deleteAction)
+        alertSheet.addAction(cancelAction)
     
+        self.present(alertSheet, animated: true, completion: nil)
+    }
     
     
     // MARK: - Table view data source
@@ -365,6 +381,16 @@ class ShowArticleTableVC: UITableViewController {
             
             let cell = tableView.dequeueReusableCell(withIdentifier: "showCommentCell", for: indexPath) as! ShowCommentCell
             let comment = comments[indexPath.row]
+            let userID = UserDefaults.standard.integer(forKey: userIDKey)
+            // Set edit button
+            let commentUserID = comment.user_id
+            if commentUserID == userID {
+                cell.editCommentBtnPressed.isHidden = false
+            } else {
+                cell.editCommentBtnPressed.isHidden = true
+            }
+            cell.editCommentBtnPressed.tag = indexPath.row
+            cell.editCommentBtnPressed.addTarget(self, action: #selector(editCommentBtnPressed(_:)), for: .touchUpInside)
             cell.commentTextView.text = comment.comment
             
             if indexPath.row < commentUserImage.count {

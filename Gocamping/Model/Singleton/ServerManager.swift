@@ -30,7 +30,7 @@ class ServeoManager {
     
     func updateNetworkManagerBaseURL() {
             if let serveoURL = self.serveoURL {
-                NetworkManager.shared.updateBaseURL(newBaseURL: serveoURL)
+//                NetworkManager.shared.updateBaseURL(newBaseURL: serveoURL)
             }
         }
     

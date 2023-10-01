@@ -88,7 +88,7 @@ class FifthViewController: UIViewController, MFMailComposeViewControllerDelegate
         if MFMailComposeViewController.canSendMail() {
             let mailComposeViewController = MFMailComposeViewController()
             mailComposeViewController.mailComposeDelegate = self
-            mailComposeViewController.setToRecipients(["theman19970919@gmail.com"])
+            mailComposeViewController.setToRecipients([email])
             mailComposeViewController.setSubject("回報問題")
             mailComposeViewController.setMessageBody("請在這裡描述您的問題...", isHTML: false)
             

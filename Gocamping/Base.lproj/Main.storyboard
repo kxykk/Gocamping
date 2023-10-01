@@ -147,11 +147,22 @@
                                             <nil key="textColor"/>
                                             <nil key="highlightedColor"/>
                                         </label>
+                                        <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="KQj-LF-WDC">
+                                            <rect key="frame" x="317" y="21.000000000000004" width="50" height="34.333333333333343"/>
+                                            <buttonConfiguration key="configuration" style="plain" image="ellipsis.circle.fill" catalog="system">
+                                                <color key="baseForegroundColor" systemColor="secondarySystemGroupedBackgroundColor"/>
+                                            </buttonConfiguration>
+                                        </button>
                                     </subviews>
+                                    <constraints>
+                                        <constraint firstAttribute="trailingMargin" secondItem="KQj-LF-WDC" secondAttribute="trailing" constant="6" id="jE2-bm-WVB"/>
+                                        <constraint firstItem="KQj-LF-WDC" firstAttribute="top" secondItem="Jsk-S6-rGT" secondAttribute="top" constant="21" id="mz7-kY-cxi"/>
+                                    </constraints>
                                 </tableViewCellContentView>
                                 <inset key="separatorInset" minX="15" minY="0.0" maxX="15" maxY="0.0"/>
                                 <connections>
                                     <outlet property="commentTextView" destination="gOz-pU-1jV" id="uLJ-CV-Ywz"/>
+                                    <outlet property="editCommentBtnPressed" destination="KQj-LF-WDC" id="HBa-xd-KzN"/>
                                     <outlet property="userImageView" destination="H0d-zg-YQG" id="wCQ-Bu-mmf"/>
                                     <outlet property="usernameLabel" destination="zrR-aY-2tA" id="8Xz-Wx-kDH"/>
                                 </connections>
@@ -1188,25 +1199,30 @@
                                     <action selector="showBtnPressed:" destination="IO6-DC-ws0" eventType="touchUpInside" id="ObS-ck-1lB"/>
                                 </connections>
                             </button>
-                            <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="yL6-iY-GTw">
-                                <rect key="frame" x="25" y="750" width="137" height="35"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="若完成註冊，即代表您同意Gocamping的" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="WJV-3h-Qq8">
+                                <rect key="frame" x="40" y="670" width="312.66666666666669" height="20.333333333333371"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <nil key="textColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="yL6-iY-GTw">
+                                <rect key="frame" x="25" y="698" width="129" height="35"/>
                                 <state key="normal" title="Button"/>
                                 <buttonConfiguration key="configuration" style="plain" title="Privacy policy"/>
                                 <connections>
                                     <action selector="privacPolicyBtnPressed:" destination="IO6-DC-ws0" eventType="touchUpInside" id="rkt-K3-qKo"/>
                                 </connections>
                             </button>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="若完成註冊，即代表您同意Gocamping的" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="WJV-3h-Qq8">
-                                <rect key="frame" x="40" y="732" width="313" height="21"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
-                                <nil key="textColor"/>
-                                <nil key="highlightedColor"/>
-                            </label>
                         </subviews>
                         <viewLayoutGuide key="safeArea" id="wxa-wr-gCx"/>
                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                        <constraints>
+                            <constraint firstItem="WJV-3h-Qq8" firstAttribute="leading" secondItem="wxa-wr-gCx" secondAttribute="leading" constant="40" id="9l5-k4-wMb"/>
+                            <constraint firstItem="yL6-iY-GTw" firstAttribute="leading" secondItem="wxa-wr-gCx" secondAttribute="leading" constant="25" id="MAA-Va-xLh"/>
+                            <constraint firstItem="yL6-iY-GTw" firstAttribute="top" secondItem="WJV-3h-Qq8" secondAttribute="bottom" constant="7.6699999999999999" id="ceo-zV-31Q"/>
+                            <constraint firstItem="wxa-wr-gCx" firstAttribute="bottom" secondItem="WJV-3h-Qq8" secondAttribute="bottom" constant="78.670000000000002" id="ixj-Qy-CuA"/>
+                            <constraint firstItem="wxa-wr-gCx" firstAttribute="bottom" secondItem="yL6-iY-GTw" secondAttribute="bottom" constant="36" id="o1j-Xp-LOU"/>
+                        </constraints>
                     </view>
                     <navigationItem key="navigationItem" id="xdj-M2-WMk"/>
                     <connections>
@@ -1515,7 +1531,7 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="vPP-6Z-LfK">
-                                <rect key="frame" x="126" y="311" width="93.333333333333314" height="35"/>
+                                <rect key="frame" x="126" y="311" width="142" height="35"/>
                                 <state key="normal" title="Button"/>
                                 <buttonConfiguration key="configuration" style="plain" title="選擇照片"/>
                                 <connections>
@@ -1523,14 +1539,14 @@
                                 </connections>
                             </button>
                             <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" text="請輸入自我介紹..." textAlignment="natural" translatesAutoresizingMaskIntoConstraints="NO" id="H2o-Y4-Nwu">
-                                <rect key="frame" x="130.66666666666666" y="371" width="183.99999999999997" height="271"/>
+                                <rect key="frame" x="130.66666666666669" y="371" width="232.66666666666669" height="271"/>
                                 <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                                 <color key="textColor" systemColor="labelColor"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="16"/>
                                 <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
                             </textView>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="vcx-Ra-Lvj">
-                                <rect key="frame" x="143" y="734" width="58.666666666666657" height="35"/>
+                                <rect key="frame" x="167.33333333333334" y="734" width="58.666666666666657" height="35"/>
                                 <state key="normal" title="Button"/>
                                 <buttonConfiguration key="configuration" style="gray" title="確認"/>
                                 <connections>
@@ -1538,7 +1554,7 @@
                                 </connections>
                             </button>
                             <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="bKw-pU-HuN">
-                                <rect key="frame" x="58.999999999999986" y="103" width="224.66666666666663" height="200"/>
+                                <rect key="frame" x="59" y="103" width="273.33333333333331" height="200"/>
                                 <constraints>
                                     <constraint firstAttribute="width" constant="200" id="4BQ-qs-SMK"/>
                                     <constraint firstAttribute="height" constant="200" id="M0x-ns-nNk"/>
