@@ -21,4 +21,5 @@ jobs:
           script: |
             cd /root/Gocamping_api
             GIT_SSH_COMMAND="ssh -i /root/.ssh/github" git pull
+            GIT_SSH_COMMAND="ssh -i /root/.ssh/github" git rev-parse HEAD
             sudo systemctl restart uvicorn.service
