@@ -18,14 +18,14 @@ class ShowArticleTableVC: UITableViewController {
     let image = "image"
     var currentCommentText: String?
     var comments = [Comment]()
-    var commentUsers = [User]()
-    var commentUserImage = [UIImage?]()
+    var shouldReloadRow: [Int: Bool] = [:]
+
     
     var activityIndicator: UIActivityIndicatorView!
     
     
     @IBOutlet weak var collectedBtnPressed: UIBarButtonItem!
-
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -80,16 +80,6 @@ class ShowArticleTableVC: UITableViewController {
             }
             if let comments = result?.comments {
                 self.comments = comments
-                
-                // 收集所有需要的用戶ID
-                let userIDs = comments.map { $0.user_id }
-                
-                // 獲取這些用戶的信息和圖像
-                self.getUsersAndImages(userIDs: userIDs) { users, images in
-                    self.commentUsers = users
-                    self.commentUserImage = images
-                    
-                }
             }
         }
         
@@ -125,54 +115,8 @@ class ShowArticleTableVC: UITableViewController {
         }
     }
     
-    // 這個函數負責獲取用戶信息和圖像
-    func getUsersAndImages(userIDs: [Int], completion: @escaping ([User], [UIImage?]) -> Void) {
-        var users = [User]()
-        var images = [UIImage?]()
-        
-        let dispatchGroup = DispatchGroup()
-        
-        for userID in userIDs {
-            dispatchGroup.enter()
-            
-            // 獲取用戶信息
-            NetworkManager.shared.getUser(userID: userID) { result, statusCode, error in
-                if let user = result?.user {
-                    users.append(user)
-                    
-                    // 獲取用戶圖像
-                    NetworkManager.shared.getImageURLByUserID(userID: userID) { result, statusCode, error in
-                        guard let imageURL = result?.image?.imageURL else {
-                            images.append(nil)
-                            dispatchGroup.leave()
-                            return
-                        }
-                        NetworkManager.shared.downloadImage(imageURL: imageURL) { data, error in
-                            if let data = data,
-                               let originalImage = UIImage(data: data),
-                               let image = UIImage.thumbnail(from: originalImage) {
-                                images.append(image)
-                            } else {
-                                images.append(nil)
-                            }
-                            dispatchGroup.leave()
-                        }
-                    }
-                } else {
-                    dispatchGroup.leave()
-                }
-            }
-        }
-        
-        dispatchGroup.notify(queue: .main) {
-            completion(users, images)
-            let commentSection = 3
-            let range = NSMakeRange(commentSection, 1)
-            let sections = NSIndexSet(indexesIn: range)
-            self.tableView.reloadSections(sections as IndexSet, with: .automatic)
-        }
-    }
-
+ 
+    
     @IBAction func collectedBtnPressed(_ sender: Any) {
         
         userID = UserDefaults.standard.integer(forKey: userIDKey)
@@ -275,7 +219,7 @@ class ShowArticleTableVC: UITableViewController {
         let cancelAction = UIAlertAction(title: "取消", style: .cancel)
         alertSheet.addAction(deleteAction)
         alertSheet.addAction(cancelAction)
-    
+        
         self.present(alertSheet, animated: true, completion: nil)
     }
     
@@ -382,6 +326,7 @@ class ShowArticleTableVC: UITableViewController {
             let cell = tableView.dequeueReusableCell(withIdentifier: "showCommentCell", for: indexPath) as! ShowCommentCell
             let comment = comments[indexPath.row]
             let userID = UserDefaults.standard.integer(forKey: userIDKey)
+            
             // Set edit button
             let commentUserID = comment.user_id
             if commentUserID == userID {
@@ -391,19 +336,47 @@ class ShowArticleTableVC: UITableViewController {
             }
             cell.editCommentBtnPressed.tag = indexPath.row
             cell.editCommentBtnPressed.addTarget(self, action: #selector(editCommentBtnPressed(_:)), for: .touchUpInside)
-            cell.commentTextView.text = comment.comment
             
-            if indexPath.row < commentUserImage.count {
-                if let image = commentUserImage[indexPath.row] {
-                    cell.userImageView.image = image
-                    cell.usernameLabel.text = commentUsers[indexPath.row].name
+            // Comment users info
+            cell.commentTextView.text = comment.comment
+            shouldReloadRow[indexPath.row] = true
+            let dispatchGroup = DispatchGroup()
+            
+            dispatchGroup.enter()
+            NetworkManager.shared.getUser(userID: commentUserID) { result, statusCode, error in
+                if let user = result?.user {
+                    cell.usernameLabel.text = user.name
+                    self.shouldReloadRow[indexPath.row] = false
+                    dispatchGroup.leave()
                 }
-            } else if let image = UIImage.thumbnail(from: UIImage(named: "userDefault")!) {
-                cell.userImageView.image = image
+            }
+            dispatchGroup.enter()
+            NetworkManager.shared.getImageURLByUserID(userID: commentUserID) { result, statusCode, error in
+                guard let imageURL = result?.image?.imageURL else {
+                    cell.userImageView.image = UIImage(named: "userDefault")
+                    dispatchGroup.leave()
+                    return
+                }
+                NetworkManager.shared.downloadImage(imageURL: imageURL) { data, error in
+                    if let data = data,
+                       let originalImage = UIImage(data: data),
+                       let image = UIImage.thumbnail(from: originalImage) {
+                        cell.userImageView.image = image
+                        dispatchGroup.leave()
+                    } else {
+                        cell.userImageView.image = UIImage(named: "userDefault")
+                        dispatchGroup.leave()
+                    }
+                }
             }
             
-            
-            
+            dispatchGroup.notify(queue: .main) {
+                if let shouldReload = self.shouldReloadRow[indexPath.row], shouldReload {
+                    let indexPathToReload = IndexPath(row: indexPath.row, section: indexPath.section)
+                    self.tableView.reloadRows(at: [indexPathToReload], with: .automatic)
+                }
+            }
+
             return cell
         default:
             return UITableViewCell()

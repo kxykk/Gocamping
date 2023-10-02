@@ -20,7 +20,7 @@ class UserModel(Base):
     following = relationship("FollowingModel", foreign_keys=[FollowingModel.user_id])
     followers = relationship("FollowerModel", foreign_keys=[FollowerModel.user_id])
     articles = relationship("ArticleModel", cascade="all, delete-orphan")
-    comments = relationship('CommentModel', back_populates='user')
+    comments = relationship('CommentModel', back_populates='user', cascade='all, delete-orphan')
     collections = relationship("ArticleModel", secondary="article_collections", back_populates="collected_by")
     images = relationship("ImageModel", back_populates="user")
 

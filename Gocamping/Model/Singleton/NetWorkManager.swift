@@ -49,9 +49,15 @@ class NetworkManager {
     let commentKey = "comment"
     let keywordKey = "keyword"
     let campNameKey = "camp_name"
-    
+
+#if DEBUG
+    static var baseURL: String = "http://localhost:8000"
+    var saveImageURL = "/Desktop/kang/Gocamping_Testapi/pictures/"
+#else
     static var baseURL: String = "http://139.162.98.222:8000"
-    //let serveoURL = "https://xiphias.serveo.net" // Serveo
+    var saveImageURL = "/root/Gocamping_api/pictures/"
+#endif
+    
     var userURL = baseURL + "/user/"
     var searchUserURL = baseURL + "/user/search/"
     var articleURL = baseURL + "/article/"
@@ -75,7 +81,6 @@ class NetworkManager {
     var getCollectedArticleURL = baseURL + "/article_collection/articles_by_userid/"
     var searchArticleURL = baseURL + "/article/search/"
     var searchCamps = baseURL + "/camp/search/"
-    var saveImageURL = "/root/Gocamping_api/pictures/"
 
     
     //MARK: Post

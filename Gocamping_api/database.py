@@ -3,7 +3,7 @@ from sqlalchemy import create_engine, MetaData
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.ext.declarative import declarative_base
 
-DATABASE_URL = "mysql+pymysql://root:root@localhost:8889/gocampingOnline"
+DATABASE_URL = "mysql+pymysql://root:kpxi0919@localhost:3306/gocamping"
 
 engine = create_engine(DATABASE_URL,
                        pool_size=10, 
