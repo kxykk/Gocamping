@@ -14,15 +14,15 @@
             <objects>
                 <tableViewController id="Ocy-n4-wAU" customClass="ShowArticleTableVC" customModule="Gocamping" customModuleProvider="target" sceneMemberID="viewController">
                     <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="none" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="-1" estimatedSectionHeaderHeight="-1" sectionFooterHeight="-1" estimatedSectionFooterHeight="-1" id="TgU-HZ-Mje">
-                        <rect key="frame" x="0.0" y="0.0" width="393" height="852"/>
+                        <rect key="frame" x="0.0" y="0.0" width="361" height="300"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                         <prototypes>
                             <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" reuseIdentifier="showUserCell" rowHeight="100" id="aWG-wG-IDL" customClass="ShowUserCell" customModule="Gocamping" customModuleProvider="target">
-                                <rect key="frame" x="0.0" y="50" width="393" height="100"/>
+                                <rect key="frame" x="0.0" y="50" width="361" height="100"/>
                                 <autoresizingMask key="autoresizingMask"/>
                                 <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="aWG-wG-IDL" id="UCA-LM-7c1" customClass="UserCell" customModule="Gocamping" customModuleProvider="target">
-                                    <rect key="frame" x="0.0" y="0.0" width="393" height="100"/>
+                                    <rect key="frame" x="0.0" y="0.0" width="361" height="100"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                     <subviews>
                                         <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="ent-59-rJU">
@@ -44,10 +44,10 @@
                                 </connections>
                             </tableViewCell>
                             <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" reuseIdentifier="showTextCell" rowHeight="75" id="Tsv-9s-9WR" customClass="ShowTextCell" customModule="Gocamping" customModuleProvider="target">
-                                <rect key="frame" x="0.0" y="150" width="393" height="75"/>
+                                <rect key="frame" x="0.0" y="150" width="361" height="75"/>
                                 <autoresizingMask key="autoresizingMask"/>
                                 <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="Tsv-9s-9WR" id="ltG-sP-2KS">
-                                    <rect key="frame" x="0.0" y="0.0" width="393" height="75"/>
+                                    <rect key="frame" x="0.0" y="0.0" width="361" height="75"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                     <subviews>
                                         <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" misplaced="YES" scrollEnabled="NO" editable="NO" text="文章內容" textAlignment="natural" translatesAutoresizingMaskIntoConstraints="NO" id="41o-ux-rHA">
@@ -70,14 +70,14 @@
                                 </connections>
                             </tableViewCell>
                             <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" reuseIdentifier="showImageCell" rowHeight="160" id="atU-mm-C9a" customClass="ShowImageCell" customModule="Gocamping" customModuleProvider="target">
-                                <rect key="frame" x="0.0" y="225" width="393" height="160"/>
+                                <rect key="frame" x="0.0" y="225" width="361" height="160"/>
                                 <autoresizingMask key="autoresizingMask"/>
                                 <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="atU-mm-C9a" id="Oa5-nj-4wT">
-                                    <rect key="frame" x="0.0" y="0.0" width="393" height="160"/>
+                                    <rect key="frame" x="0.0" y="0.0" width="361" height="160"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                     <subviews>
                                         <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="rFE-KX-l9T">
-                                            <rect key="frame" x="5" y="11" width="383" height="138"/>
+                                            <rect key="frame" x="5" y="11" width="351" height="138"/>
                                         </imageView>
                                     </subviews>
                                     <constraints>
@@ -92,10 +92,10 @@
                                 </connections>
                             </tableViewCell>
                             <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" reuseIdentifier="showMyCommentCell" rowHeight="92" id="aJg-Mv-PsM" customClass="ShowMyCommentCell" customModule="Gocamping" customModuleProvider="target">
-                                <rect key="frame" x="0.0" y="385" width="393" height="92"/>
+                                <rect key="frame" x="0.0" y="385" width="361" height="92"/>
                                 <autoresizingMask key="autoresizingMask"/>
                                 <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="aJg-Mv-PsM" id="eoL-Re-9TV">
-                                    <rect key="frame" x="0.0" y="0.0" width="393" height="92"/>
+                                    <rect key="frame" x="0.0" y="0.0" width="361" height="92"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                     <subviews>
                                         <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" fixedFrame="YES" textAlignment="natural" translatesAutoresizingMaskIntoConstraints="NO" id="7J8-de-MlU">
@@ -122,10 +122,10 @@
                                 </connections>
                             </tableViewCell>
                             <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" reuseIdentifier="showCommentCell" rowHeight="120" id="8ge-Dk-MDS" customClass="ShowCommentCell" customModule="Gocamping" customModuleProvider="target">
-                                <rect key="frame" x="0.0" y="477" width="393" height="120"/>
+                                <rect key="frame" x="0.0" y="477" width="361" height="120"/>
                                 <autoresizingMask key="autoresizingMask"/>
                                 <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="8ge-Dk-MDS" id="Jsk-S6-rGT">
-                                    <rect key="frame" x="0.0" y="0.0" width="393" height="120"/>
+                                    <rect key="frame" x="0.0" y="0.0" width="361" height="120"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                     <subviews>
                                         <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" fixedFrame="YES" editable="NO" text="評論區" textAlignment="natural" translatesAutoresizingMaskIntoConstraints="NO" id="gOz-pU-1jV">
@@ -147,7 +147,7 @@
                                             <nil key="textColor"/>
                                             <nil key="highlightedColor"/>
                                         </label>
-                                        <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="KQj-LF-WDC">
+                                        <button opaque="NO" contentMode="scaleToFill" ambiguous="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="KQj-LF-WDC">
                                             <rect key="frame" x="317" y="21.000000000000004" width="50" height="34.333333333333343"/>
                                             <buttonConfiguration key="configuration" style="plain" image="ellipsis.circle.fill" catalog="system">
                                                 <color key="baseForegroundColor" systemColor="secondarySystemGroupedBackgroundColor"/>
@@ -280,6 +280,7 @@
                                         <connections>
                                             <outlet property="userImage" destination="1PD-Aq-XOJ" id="Wo7-gV-oL5"/>
                                             <outlet property="userName" destination="089-Yv-TtJ" id="uzy-7Y-ape"/>
+                                            <segue destination="pg4-CK-YIc" kind="push" identifier="showUserSegue" id="4Ou-RS-luU"/>
                                         </connections>
                                     </tableViewCell>
                                 </prototypes>
@@ -516,6 +517,7 @@
                                     </constraints>
                                 </tableViewCellContentView>
                                 <connections>
+                                    <outlet property="editBtnPressed" destination="IzF-CF-cZh" id="xVi-m8-kIX"/>
                                     <outlet property="myArticleImage" destination="to7-aq-7lG" id="QXg-0k-yob"/>
                                     <outlet property="myArticleTitle" destination="wIs-mJ-114" id="huk-B1-WKf"/>
                                     <segue destination="Ocy-n4-wAU" kind="push" identifier="showMyArticleSegue" id="GR2-CN-UgD"/>
@@ -585,6 +587,7 @@
                                 <connections>
                                     <outlet property="collectedArticleImage" destination="CIH-It-BmO" id="Ric-xO-O0J"/>
                                     <outlet property="collectedArticleTitleLabel" destination="jBT-eq-TEs" id="Cfv-Yn-VaU"/>
+                                    <outlet property="editBtnPressed" destination="uat-eM-wLZ" id="DZG-4n-Pfo"/>
                                     <segue destination="Ocy-n4-wAU" kind="push" identifier="showcollectedArticle" id="8Vx-Iz-XRq"/>
                                 </connections>
                             </tableViewCell>
@@ -1388,6 +1391,7 @@
                     </navigationItem>
                     <connections>
                         <outlet property="createArticleBtnPressed" destination="8uz-Yp-1R9" id="lxK-gA-hLC"/>
+                        <outlet property="editBtnPressed" destination="sQL-I5-euv" id="ZsQ-tY-2uq"/>
                         <outlet property="followerNumber" destination="4X5-I5-HR7" id="qiL-Dj-YXh"/>
                         <outlet property="followingNumber" destination="grA-f4-h2a" id="F4Q-sv-4w1"/>
                         <outlet property="howManyArticle" destination="R8X-E8-GeI" id="dz7-2b-sAi"/>
@@ -1490,6 +1494,7 @@
                 <navigationController automaticallyAdjustsScrollViewInsets="NO" id="KKR-OI-xuI" sceneMemberID="viewController">
                     <tabBarItem key="tabBarItem" title="我的文章" image="user" selectedImage="user" id="0Dd-SA-tWs"/>
                     <toolbarItems/>
+                    <navigationItem key="navigationItem" id="KYU-jL-IbW"/>
                     <navigationBar key="navigationBar" contentMode="scaleToFill" id="Bmu-XJ-euW">
                         <rect key="frame" x="0.0" y="59" width="393" height="44"/>
                         <autoresizingMask key="autoresizingMask"/>
@@ -1531,7 +1536,7 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="vPP-6Z-LfK">
-                                <rect key="frame" x="126" y="311" width="142" height="35"/>
+                                <rect key="frame" x="126" y="311" width="93.333333333333314" height="35"/>
                                 <state key="normal" title="Button"/>
                                 <buttonConfiguration key="configuration" style="plain" title="選擇照片"/>
                                 <connections>
@@ -1539,14 +1544,14 @@
                                 </connections>
                             </button>
                             <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" text="請輸入自我介紹..." textAlignment="natural" translatesAutoresizingMaskIntoConstraints="NO" id="H2o-Y4-Nwu">
-                                <rect key="frame" x="130.66666666666669" y="371" width="232.66666666666669" height="271"/>
+                                <rect key="frame" x="130.66666666666666" y="371" width="183.99999999999997" height="271"/>
                                 <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                                 <color key="textColor" systemColor="labelColor"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="16"/>
                                 <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
                             </textView>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="vcx-Ra-Lvj">
-                                <rect key="frame" x="167.33333333333334" y="734" width="58.666666666666657" height="35"/>
+                                <rect key="frame" x="143" y="734" width="58.666666666666657" height="35"/>
                                 <state key="normal" title="Button"/>
                                 <buttonConfiguration key="configuration" style="gray" title="確認"/>
                                 <connections>
@@ -1554,7 +1559,7 @@
                                 </connections>
                             </button>
                             <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="bKw-pU-HuN">
-                                <rect key="frame" x="59" y="103" width="273.33333333333331" height="200"/>
+                                <rect key="frame" x="58.999999999999986" y="103" width="224.66666666666663" height="200"/>
                                 <constraints>
                                     <constraint firstAttribute="width" constant="200" id="4BQ-qs-SMK"/>
                                     <constraint firstAttribute="height" constant="200" id="M0x-ns-nNk"/>
@@ -1602,9 +1607,10 @@
         </scene>
     </scenes>
     <inferredMetricsTieBreakers>
+        <segue reference="4Ou-RS-luU"/>
         <segue reference="qR7-yk-LWp"/>
         <segue reference="XEI-61-69J"/>
-        <segue reference="Ujm-AX-HEJ"/>
+        <segue reference="8Vx-Iz-XRq"/>
     </inferredMetricsTieBreakers>
     <resources>
         <image name="article" width="25" height="25"/>

@@ -179,7 +179,7 @@ class ShowArticleTableVC: UITableViewController {
         
         NetworkManager.shared.postarticleCollection(articleID: articleID, userID: userID) { result, statusCode, error in
             if self.userID == 0 {
-                ShowMessageManager.shared.collectedArticleToast(on: self, message: "您尚未登入！")
+                ShowMessageManager.shared.showToastGlobal(message: "您尚未登入！")
                 return
             }
             if let error = error {
@@ -187,9 +187,9 @@ class ShowArticleTableVC: UITableViewController {
                 return
             }
             if statusCode == 409 {
-                ShowMessageManager.shared.collectedArticleToast(on: self, message: "已收藏")
+                ShowMessageManager.shared.showToastGlobal(message: "已收藏")
             } else {
-                ShowMessageManager.shared.collectedArticleToast(on: self, message: "收藏成功！")
+                ShowMessageManager.shared.showToastGlobal(message: "收藏成功！")
             }
         }
     }
@@ -200,12 +200,12 @@ class ShowArticleTableVC: UITableViewController {
         
         if userID == 0 {
             let message = "您尚未登入"
-            ShowMessageManager.shared.collectedArticleToast(on: self, message: message)
+            ShowMessageManager.shared.showToastGlobal(message: message)
             return
         }
         guard let comment = currentCommentText, comment.isEmpty == false else {
             let message = "您尚未輸入評論"
-            ShowMessageManager.shared.collectedArticleToast(on: self, message: message)
+            ShowMessageManager.shared.showToastGlobal(message: message)
             return
         }
         
@@ -225,7 +225,7 @@ class ShowArticleTableVC: UITableViewController {
                 self.getArticleContent()
                 DispatchQueue.main.async {
                     let message = "評論上傳成功"
-                    ShowMessageManager.shared.showToast(on: self, message: message)
+                    ShowMessageManager.shared.showToastGlobal(message: message)
                 }
             }
         }
@@ -267,7 +267,7 @@ class ShowArticleTableVC: UITableViewController {
                     self.comments.remove(at: row)
                     DispatchQueue.main.async {
                         self.tableView.reloadData()
-                        ShowMessageManager.shared.showToast(on: self, message: "刪除成功")
+                        ShowMessageManager.shared.showToastGlobal(message: "刪除成功")
                     }
                 }
             }

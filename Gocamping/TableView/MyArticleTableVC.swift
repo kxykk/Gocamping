@@ -8,12 +8,12 @@
 import UIKit
 
 class MyArticleTableVC: UITableViewController {
-    
-    
+        
+    var isFromFirstVC = false
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        
+
     }
     @IBAction func editBtnPressed(_ sender: Any) {
         
@@ -76,6 +76,8 @@ class MyArticleTableVC: UITableViewController {
         // Image
         loadImage(for: cell, with: myArticles[indexPath.row])
         
+        cell.configureButton(isHidden: isFromFirstVC)
+        
         return cell
     }
     
@@ -83,7 +85,6 @@ class MyArticleTableVC: UITableViewController {
     func loadImage(for cell: MyArticleCell, with article: Articles) {
         let articleID = article.article_id
         let imageType = "title"
-        
         NetworkManager.shared.getImage(articleID: articleID, imageType: imageType) { result, statusCode, error in
             if let error = error {
                 assertionFailure("Get image error: \(error)")

@@ -64,7 +64,7 @@ class FifthViewController: UIViewController, MFMailComposeViewControllerDelegate
         print("Current User ID: \(userID)")
         if userID == 0 {
             print("您尚未登入")
-            ShowMessageManager.shared.showToast(on: self, message: "您尚未登入")
+            ShowMessageManager.shared.showToastGlobal(message: "您尚未登入")
             return
         } else {
             print("登出")
@@ -95,7 +95,7 @@ class FifthViewController: UIViewController, MFMailComposeViewControllerDelegate
             present(mailComposeViewController, animated: true, completion: nil)
         } else {
             let message = "此設備不能發送信件"
-            ShowMessageManager.shared.showToast(on: self, message: message)
+            ShowMessageManager.shared.showToastGlobal(message: message)
         }
         
     }
@@ -104,7 +104,7 @@ class FifthViewController: UIViewController, MFMailComposeViewControllerDelegate
         
         let userID = UserDefaults.standard.integer(forKey: userIDKey)
         if userID == 0 {
-            ShowMessageManager.shared.showToast(on: self, message: "您尚未登入!")
+            ShowMessageManager.shared.showToastGlobal(message: "您尚未登入!")
         } else {
             
             ShowMessageManager.shared.showDeleteAlert(on: self, title: "刪除帳號", message: "確定刪除帳號嗎？") {

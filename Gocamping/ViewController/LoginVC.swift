@@ -57,11 +57,11 @@ class LoginVC: UIViewController {
     @IBAction func btnLoginPressed(_ sender: Any) {
         
         if emailTextField.text == "" {
-            ShowMessageManager.shared.showToast(on: self, message: "請輸入帳號(信箱)")
+            ShowMessageManager.shared.showToastGlobal(message: "請輸入帳號(信箱)")
             return
         }
         if passwordTextField.text == "" {
-            ShowMessageManager.shared.showToast(on: self, message: "請輸入密碼")
+            ShowMessageManager.shared.showToastGlobal(message: "請輸入密碼")
             return
         }
         guard let email = emailTextField.text, let password = passwordTextField.text else {
@@ -69,9 +69,9 @@ class LoginVC: UIViewController {
         }
         NetworkManager.shared.login(email: email, password: password) { result, statusCode, error in
             if statusCode == 404 {
-                ShowMessageManager.shared.showToast(on: self, message: "帳號有誤！")
+                ShowMessageManager.shared.showToastGlobal(message: "帳號有誤！")
             } else if statusCode == 401 {
-                ShowMessageManager.shared.showToast(on: self, message: "密碼有誤！")
+                ShowMessageManager.shared.showToastGlobal(message: "密碼有誤！")
             }
             if let user = result?.user {
                 
@@ -102,7 +102,7 @@ class LoginVC: UIViewController {
     }
     
     @objc func handleEmailSentNotification(_ notification: Notification) {
-        ShowMessageManager.shared.showToast(on: self, message: "發送信件完成")
+        ShowMessageManager.shared.showToastGlobal(message: "發送信件完成")
     }
     
     @IBAction func forgetPWBtnPressed(_ sender: Any) {
@@ -132,7 +132,7 @@ class LoginVC: UIViewController {
 extension LoginVC: RegisterVCDelegate {
     
     func registerSuccess() {
-        ShowMessageManager.shared.showToast(on: self, message: "註冊成功，請登入")
+        ShowMessageManager.shared.showToastGlobal(message: "註冊成功，請登入")
     }
     
 }

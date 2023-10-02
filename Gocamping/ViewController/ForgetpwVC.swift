@@ -34,12 +34,12 @@ class ForgetpasswordVC: UIViewController, MFMailComposeViewControllerDelegate {
 
     @IBAction func sendEmailBtnPressed(_ sender: Any) {
             guard let email = accountTextField.text, email != "" else {
-                ShowMessageManager.shared.showToast(on: self, message: "請輸入正確的帳號(信箱)")
+                ShowMessageManager.shared.showToastGlobal( message: "請輸入正確的帳號(信箱)")
                 return
             }
             NetworkManager.shared.searchUser(email: email) { result, statusCode, error in
                 if let error = error {
-                    ShowMessageManager.shared.showToast(on: self, message: "查無此帳號(信箱)")
+                    ShowMessageManager.shared.showToastGlobal(message: "查無此帳號(信箱)")
                     return
                 }
                 if let result = result, let password = result.user?.password {
@@ -60,7 +60,7 @@ class ForgetpasswordVC: UIViewController, MFMailComposeViewControllerDelegate {
                 present(mail, animated: true)
             } else {
                 // 顯示錯誤訊息
-                ShowMessageManager.shared.showToast(on: self, message: "無法發送電子郵件")
+                ShowMessageManager.shared.showToastGlobal(message: "無法發送電子郵件")
             }
         }
 

@@ -12,9 +12,8 @@ import UIKit
 class MyArticleCell: UITableViewCell {
 
     @IBOutlet weak var myArticleImage: UIImageView!
-    
     @IBOutlet weak var myArticleTitle: UILabel!
-    
+    @IBOutlet weak var editBtnPressed: UIButton!
     override func awakeFromNib() {
         super.awakeFromNib()
         // Initialization code
@@ -36,4 +35,7 @@ class MyArticleCell: UITableViewCell {
         // Configure the view for the selected state
     }
 
+    func configureButton(isHidden: Bool) {
+        editBtnPressed.isHidden = isHidden
+    }
 }

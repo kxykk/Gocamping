@@ -10,7 +10,9 @@ import UIKit
 class CollectedArticleCell: UITableViewCell {
 
     @IBOutlet weak var collectedArticleImage: UIImageView!
+    @IBOutlet weak var editBtnPressed: UIButton!
     @IBOutlet weak var collectedArticleTitleLabel: UILabel!
+    
     override func awakeFromNib() {
         super.awakeFromNib()
         collectedArticleImage?.contentMode = .scaleAspectFill
@@ -27,6 +29,10 @@ class CollectedArticleCell: UITableViewCell {
         super.setSelected(selected, animated: animated)
 
         // Configure the view for the selected state
+    }
+    
+    func configureButton(isHidden: Bool) {
+        editBtnPressed.isHidden = isHidden
     }
 
 }

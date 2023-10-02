@@ -45,7 +45,7 @@ class FourthViewController: UIViewController {
     }
     @objc func loginSuccess() {
         if let hasUserName = userName {
-            ShowMessageManager.shared.showToast(on: self, message: "登入成功 \(hasUserName)")
+            ShowMessageManager.shared.showToastGlobal(message: "登入成功 \(hasUserName)")
         }
     }
 }

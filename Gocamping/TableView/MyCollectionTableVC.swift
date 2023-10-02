@@ -10,6 +10,7 @@ import UIKit
 class MyCollectionTableVC: UITableViewController {
  
     var userID = 0
+    var isFromFirstVC = false
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -37,7 +38,7 @@ class MyCollectionTableVC: UITableViewController {
                 }
                 DispatchQueue.main.async {
                     ArticleManager.shared.myCollectedArticle.remove(at: indexPath.row)
-                    ShowMessageManager.shared.showContainerViewToast(on: self, message: "取消收藏成功！")
+                    ShowMessageManager.shared.showToastGlobal(message: "取消收藏成功！")
                     self.tableView.reloadData()
                 }
                 
@@ -102,7 +103,7 @@ class MyCollectionTableVC: UITableViewController {
                 }
             }
         }
-
+        cell.configureButton(isHidden: isFromFirstVC)
         return cell
     }
     

@@ -90,7 +90,7 @@ class RegisterVC: UIViewController, SFSafariViewControllerDelegate {
                 return
             }
             if statusCode == 409 {
-                ShowMessageManager.shared.showToast(on: self, message: "信箱已註冊過")
+                ShowMessageManager.shared.showToastGlobal(message: "信箱已註冊過")
                 return
             } else {
                 self.registerDelegate?.registerSuccess()

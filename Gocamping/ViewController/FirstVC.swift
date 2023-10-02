@@ -107,11 +107,11 @@ class FirstViewController: UIViewController {
     }
     
     @objc func userDidLogout() {
-        ShowMessageManager.shared.showToast(on: self, message: "登出成功！")
+        ShowMessageManager.shared.showToastGlobal(message: "登出成功！")
     }
     
     @objc func userDidDelete() {
-        ShowMessageManager.shared.showToast(on: self, message: "刪除帳號成功")
+        ShowMessageManager.shared.showToastGlobal(message: "刪除帳號成功")
     }
 
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
@@ -120,6 +120,11 @@ class FirstViewController: UIViewController {
            let indexPath = self.firstTableView.indexPathForSelectedRow {
             showArticleTableVC.articleID = ArticleManager.shared.allArticle[indexPath.row / 2].article_id
             showArticleTableVC.userID = UserManager.shared.userByArticle[indexPath.row / 2].user_id
+        } else if segue.identifier == "showUserSegue",
+                  let thirdVC = segue.destination as? ThirdViewController,
+                  let indexPath = self.firstTableView.indexPathForSelectedRow {
+            thirdVC.userID = UserManager.shared.userByArticle[indexPath.row / 2].user_id
+            thirdVC.isFromFirstVC = true
         }
     }
     
