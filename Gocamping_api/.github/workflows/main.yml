@@ -1,0 +1,24 @@
+name: Deploy FastAPI app to server
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Deploy to Docker host
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.LINODE_HOST }}
+          username: ${{ secrets.LINODE_USER }}
+          key: ${{ secrets.LINODE_KEY }}
+          script: |
+            cd /root/Gocamping_api
+            GIT_SSH_COMMAND="ssh -i /root/.ssh/github" git pull
+            sudo systemctl restart uvicorn.service
