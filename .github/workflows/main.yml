@@ -1,4 +1,5 @@
 # main.yml
+# test
 name: Deploy FastAPI app to server
 
 on:
