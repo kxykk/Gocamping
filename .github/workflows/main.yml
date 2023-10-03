@@ -1,5 +1,4 @@
 # main.yml
-#123
 name: Deploy FastAPI app to server
 
 on:
