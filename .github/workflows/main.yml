@@ -19,7 +19,7 @@ jobs:
           host: ${{ secrets.LINODE_HOST }}
           username: ${{ secrets.LINODE_USER }}
           key: ${{ secrets.LINODE_KEY }}
-          passphrase: ${{ secrets.PASSPHRASE }}
+          passphrase: ${{ secrets.LINODE_PASSPHRASE }}
           script: |
             cd /root/Gocamping_api
             GIT_SSH_COMMAND="ssh -i /root/.ssh/github" git pull
