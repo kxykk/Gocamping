@@ -2,10 +2,14 @@ from fastapi import APIRouter, HTTPException, Depends, Form
 from sqlalchemy.orm import Session
 from api.image.image_schema import ImageCreate, ImageUpdate, ImageType, Image
 from api.image.image_crud import get_image, create_image, update_image, delete_image, get_image_by_article_and_type, get_images_by_user_id, get_images_by_camp_id
+from api.camp.camp_crud import fetch_camp_name_from_db
 from api.server_response.server_response_model import ServerResponse
 from fastapi import UploadFile, File
 from pathlib import Path
+from fastapi import UploadFile
 import shutil
+from io import BytesIO
+import uuid
 import os
 import database
 import requests
@@ -49,7 +53,7 @@ async def delete_image_route(image_id: int, db: Session = Depends(get_db)):
     else:
         raise HTTPException(status_code=404, detail="Image not found")
     
-@router.get("/{image_id}", response_model=ServerResponse)
+@router.get("/image/{image_id}", response_model=ServerResponse)
 async def read_image(image_id: int, db: Session = Depends(get_db)):
     db_image = get_image(db, image_id)
     if db_image:
@@ -80,55 +84,49 @@ async def get_images_by_camp_id_route(camp_id: int, db: Session = Depends(get_db
     if db_images:
         return ServerResponse(success=True, image=db_images[0])
     else:
-        raise HTTPException(status_code=409, detail="Images not found for the given camp ID")
-
+        camp_name = fetch_camp_name_from_db(camp_id, db)
+        if not camp_name:
+            raise HTTPException(status_code=409, detail="Camp not found")
+        
+        server_response = await get_google_place_image(camp_id, camp_name, db)
+        if server_response.success:
+            return server_response
+        else:
+            raise HTTPException(status_code=409, detail="Images not found for the given camp ID")
 
 @router.get("/get_google_place_image/", response_model=ServerResponse)
-async def get_google_place_image(camp_name: str, db: Session = Depends(get_db)):
-    google_places_api_key = "YourGooglePlacesAPIKey"
+async def get_google_place_image(camp_id: int, camp_name: str, db: Session = Depends(get_db)):
+    google_places_api_key = "AIzaSyBhcbPpww75eRWWoE_JylkQ7bvHcsd_PMk"
     place_search_url = f"https://maps.googleapis.com/maps/api/place/findplacefromtext/json?input={camp_name}&inputtype=textquery&fields=photos&key={google_places_api_key}"
     
-    with requests.get(place_search_url) as response:
-        if response.status_code == 200:
-            json_data = response.json()
-            if "candidates" in json_data and json_data["candidates"]:
-                photo_reference = json_data["candidates"][0].get("photos", [{}])[0].get("photo_reference", None)
-                if photo_reference:
-                    photo_url = f"https://maps.googleapis.com/maps/api/place/photo?maxwidth=400&photoreference={photo_reference}&key={google_places_api_key}"
-                    
-                    # Download the image
-                    image_response = requests.get(photo_url)
-                    if image_response.status_code == 200:
-                        image_data = image_response.content
-                        
-                        # Save the image to a folder
-                        base_path = Path("./pictures/")
-                        base_path.mkdir(parents=True, exist_ok=True)
-                        save_path = base_path / f"{camp_name}.jpg"
-                        with save_path.open("wb") as buffer:
-                            buffer.write(image_data)
-                        
-                        # Save the image info to the database
-                        db_image = ImageCreate(
-                            imageURL=str(save_path),
-                            image_type="camp",
-                            image_sortNumber=0,
-                            image_format="jpg",
-                            image_size=len(image_data)
-                        )
-                        db_image = create_image(db, db_image)
-                        if db_image:
-                            return ServerResponse(success=True, image=db_image)
-                        else:
-                            return ServerResponse(success=False, errorCode="ImageCreationFailed")
-                    else:
-                        return ServerResponse(success=False, errorCode="ImageDownloadFailed")
-                else:
-                    return ServerResponse(success=False, errorCode="ImageNotFound")
-            else:
-                return ServerResponse(success=False, errorCode="ImageNotFound")
-        else:
-            return ServerResponse(success=False, errorCode="PlaceIDNotFound")
+    response = requests.get(place_search_url)
+    if response.status_code == 200:
+        json_data = response.json()
+        photo_reference = json_data["candidates"][0]["photos"][0]["photo_reference"]
+        photo_url = f"https://maps.googleapis.com/maps/api/place/photo?maxwidth=400&photoreference={photo_reference}&key={google_places_api_key}"
+        
+        image_response = requests.get(photo_url)
+        if image_response.status_code == 200:
+            image_data = image_response.content
+            file_uuid = uuid.uuid4().hex
+
+            image_file = UploadFile(
+               filename=f"{file_uuid}.jpg",
+               file=BytesIO(image_data)
+            )
+            upload_response = await upload_file(
+                file=image_file,
+                article_id=None,
+                user_id=None,
+                camp_id=camp_id,
+                image_sortNumber=0,
+                image_type="camp", 
+                db=db
+            )
+            return upload_response
+    return ServerResponse(success=False, errorCode="ImageNotFound")
+
+
 
 
 
@@ -152,7 +150,7 @@ async def upload_file(
         shutil.copyfileobj(file.file, buffer)
 
     file_size = save_path.stat().st_size
-
+    print("Saving to:", save_path)
     image_data = ImageCreate(
         article_id=article_id, 
         user_id=user_id,
@@ -175,7 +173,10 @@ async def upload_file(
                 return ServerResponse(success=False, errorCode="ImageUpdateFailed")
         else:
             # Create new image if none exists
+            print("Image Data:", image_data)
             db_image = create_image(db, image_data)
+            print("Saving to:", save_path)
+            print("DB Image:", db_image)
             print("Creating image with data:", image_data)
             if db_image:
                 return ServerResponse(success=True, image=db_image)

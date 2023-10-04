@@ -23,10 +23,7 @@ class MyArticleTableVC: UITableViewController {
             print("沒有選定的行")
             return
         }
-        if ArticleManager.shared.myArticle.isEmpty {
-               print("沒有文章可以編輯")
-               return
-        }
+
         
         // Edit lists
         let actionSheet = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)

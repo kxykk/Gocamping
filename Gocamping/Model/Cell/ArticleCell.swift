@@ -26,7 +26,7 @@ class ArticleCell: UITableViewCell {
         articleImage.clipsToBounds = true
         
             
-        articleLabel.backgroundColor = UIColor.gray.withAlphaComponent(0.5)
+        articleLabel.backgroundColor = UIColor.black.withAlphaComponent(0.2)
         articleLabel.font = UIFont.boldSystemFont(ofSize: 24)
         articleLabel.textColor = UIColor.white
         //articleLabel.layer.cornerRadius = 10
@@ -53,5 +53,15 @@ class ArticleCell: UITableViewCell {
         super.setSelected(selected, animated: animated)
 
         // Configure the view for the selected state
+    }
+    
+    override func layoutSubviews() {
+        super.layoutSubviews()
+        
+        let path = UIBezierPath(roundedRect: articleLabel.bounds, byRoundingCorners: [.bottomLeft, .bottomRight], cornerRadii: CGSize(width: 10, height: 10))
+        let maskLayer = CAShapeLayer()
+        maskLayer.frame = articleLabel.bounds
+        maskLayer.path = path.cgPath
+        articleLabel.layer.mask = maskLayer
     }
 }

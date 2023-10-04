@@ -14,51 +14,64 @@ protocol FifthVCDelegate: AnyObject {
 }
 class FifthViewController: UIViewController, MFMailComposeViewControllerDelegate {
     
-    @IBOutlet weak var myEmail: UILabel!
-    @IBOutlet weak var iconImage: UIImageView!
     @IBOutlet weak var deleteAccountBtnPressed: UIButton!
     @IBOutlet weak var sharedBtnPressed: UIButton!
     @IBOutlet weak var reportBtnPressed: UIButton!
     @IBOutlet weak var logoutBtnPressed: UIButton!
     
+    @IBOutlet weak var myEmailBtnPressed: UIButton!
     weak var fifthVCDelegate: FifthVCDelegate?
     
     let email = "gocamping919@gmail.com"
     
     override func viewDidLoad() {
         super.viewDidLoad()
-
-
+        
+        
         // Do any additional setup after loading the view.
         
         
         reportBtnPressed.setImage(UIImage(named: "problems"), for: .normal)
-        reportBtnPressed.setTitle("回報問題", for: .normal)
-        reportBtnPressed.setTitleColor(.blue, for: .normal)
-        reportBtnPressed.imageView?.contentMode = .scaleAspectFit
+        reportBtnPressed.setTitle("  回報問題", for: .normal)
+        reportBtnPressed.setTitleColor(UIColor.systemBlue.withAlphaComponent(0.8), for: .normal)
+        reportBtnPressed.imageView?.contentMode = .scaleAspectFill
         
         sharedBtnPressed.setImage(UIImage(named: "share"), for: .normal)
-        sharedBtnPressed.setTitle("分享App", for: .normal)
+        sharedBtnPressed.setTitle("  分享App", for: .normal)
         sharedBtnPressed.setTitleColor(.blue, for: .normal)
-        sharedBtnPressed.imageView?.contentMode = .scaleAspectFit
+        sharedBtnPressed.imageView?.contentMode = .scaleAspectFill
         sharedBtnPressed.isHidden = true
         
         deleteAccountBtnPressed.setImage(UIImage(named: "delete"), for: .normal)
-        deleteAccountBtnPressed.setTitle("刪除帳號", for: .normal)
-        deleteAccountBtnPressed.setTitleColor(.blue, for: .normal)
-        deleteAccountBtnPressed.imageView?.contentMode = .scaleAspectFit
+        deleteAccountBtnPressed.setTitle("  刪除帳號", for: .normal)
+        deleteAccountBtnPressed.setTitleColor(.red, for: .normal)
+        deleteAccountBtnPressed.imageView?.contentMode = .scaleAspectFill
         
         logoutBtnPressed.setImage(UIImage(named: "logout"), for: .normal)
-        logoutBtnPressed.setTitle("登出", for: .normal)
-        logoutBtnPressed.setTitleColor(.blue, for: .normal)
-        logoutBtnPressed.imageView?.contentMode = .scaleAspectFit
+        logoutBtnPressed.setTitle("  登出", for: .normal)
+        logoutBtnPressed.setTitleColor(UIColor.systemBlue.withAlphaComponent(0.8), for: .normal)
+        logoutBtnPressed.imageView?.contentMode = .scaleAspectFill
         
-        iconImage?.image = UIImage(named: "icon")
+        let title = "連絡信箱: \n\(email)"
+        let styledTitle = styleButtonText(title: title)
+        myEmailBtnPressed.setImage(UIImage(named: "icon"), for: .normal)
+        myEmailBtnPressed.setAttributedTitle(styledTitle, for: .normal)
+        myEmailBtnPressed.setTitleColor(UIColor.black, for: .normal)
+        myEmailBtnPressed.imageView?.contentMode = .scaleAspectFill
+        myEmailBtnPressed.contentHorizontalAlignment = .left
         
-        myEmail.text = "連絡信箱為: \n\(email)"
+
+        
+        styleButton(reportBtnPressed)
+        styleButton(sharedBtnPressed)
+        styleButton(deleteAccountBtnPressed)
+        styleButton(logoutBtnPressed)
+
         
         
     }
+    
+    
     @IBAction func logoutBtnPressed(_ sender: Any) {
         let userID = UserDefaults.standard.integer(forKey: userIDKey)
         print("Current User ID: \(userID)")
@@ -74,7 +87,7 @@ class FifthViewController: UIViewController, MFMailComposeViewControllerDelegate
             UserDefaults.standard.set("", forKey: imageURLKey)
             ArticleManager.shared.myArticle = []
             ArticleManager.shared.myCollectedArticle = []
-
+            
             fifthVCDelegate?.didLogoutSuccessfully()
             NotificationCenter.default.post(name: Notification.Name("UserDidLogout"), object: nil)
             
@@ -134,17 +147,53 @@ class FifthViewController: UIViewController, MFMailComposeViewControllerDelegate
         }
     }
     
+    @IBAction func myEmailBtnPressed(_ sender: Any) {
+        
+    }
+    
+    func styleButtonText(title: String) -> NSMutableAttributedString {
+            
+            let attributedString = NSMutableAttributedString(
+                string: title,
+                attributes: [
+                    NSAttributedString.Key.font: UIFont.systemFont(ofSize: 14)
+                ]
+            )
+            
+            let prefix = "連絡信箱: \n"
+            let prefixCount = prefix.count
+            
+            attributedString.addAttributes(
+                [NSAttributedString.Key.font: UIFont.systemFont(ofSize: 24)],
+                range: NSRange(location: 0, length: prefixCount)
+            )
+
+            attributedString.addAttributes(
+                [NSAttributedString.Key.font: UIFont.systemFont(ofSize: 16)],
+                range: NSRange(location: prefixCount, length: email.count)
+            )
+            
+            return attributedString
+    }
+
+    
+    func styleButton(_ button: UIButton) {
+        button.layer.cornerRadius = 10.0
+        button.backgroundColor = UIColor.systemBlue.withAlphaComponent(0.1)
+        button.shadow()
+    }
+    
     func mailComposeController(_ controller: MFMailComposeViewController, didFinishWith result: MFMailComposeResult, error: Error?) {
         controller.dismiss(animated: true, completion: nil)
     }
     /*
-    // MARK: - Navigation
-
-    // In a storyboard-based application, you will often want to do a little preparation before navigation
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        // Get the new view controller using segue.destination.
-        // Pass the selected object to the new view controller.
-    }
-    */
-
+     // MARK: - Navigation
+     
+     // In a storyboard-based application, you will often want to do a little preparation before navigation
+     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+     // Get the new view controller using segue.destination.
+     // Pass the selected object to the new view controller.
+     }
+     */
+    
 }

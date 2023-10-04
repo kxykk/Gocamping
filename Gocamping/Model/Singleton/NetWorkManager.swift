@@ -70,7 +70,7 @@ class NetworkManager {
     var getImageByUserID = baseURL + "/image/get_by_user/"
     var getUserByArticleIDURL = baseURL + "/user/by_article/"
     var getCampURL = baseURL + "/camp/"
-    var getCampImageURL = baseURL + "/image/get_google_place_image/"
+    var getCampImageURL = baseURL + "/image/get_by_camp/"
     var getMyArticleURL = baseURL + "/article/by_user_id/"
     var getDetailsByArticleIDURL = baseURL + "/article/details/"
     var CommentURL = baseURL + "/comment/"
@@ -236,6 +236,11 @@ class NetworkManager {
     
     func getCamps(completion: @escaping DoneHandler) {
         doGet(getCampURL, completion: completion)
+    }
+    
+    func getCampsImage(camp_id: Int, completion: @escaping DoneHandler) {
+        let finalURL = getCampImageURL + String(camp_id)
+        doGet(finalURL, completion: completion)
     }
     
     func getMyArticle(userID: Int, completion: @escaping DoneHandler) {

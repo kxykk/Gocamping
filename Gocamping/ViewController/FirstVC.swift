@@ -11,103 +11,136 @@ import Network
 
 class FirstViewController: UIViewController {
     
-    
     @IBOutlet weak var searchArticlesBar: UISearchBar!
     @IBOutlet weak var firstTableView: FirstTableView!
-    
     var noResultsLabel: UILabel!
     var activityIndicator: UIActivityIndicatorView!
-    
+    let tableViewContainer = UIView()
     var lastSearchKeyword: String?
     var lastSearchResults: [Articles]?
-    
     let monitor = NWPathMonitor()
-
+    
+    
     override func viewDidLoad() {
         super.viewDidLoad()
-        
-        print(NSHomeDirectory())
-        
-        // Label
-        noResultsLabel = UILabel(frame: CGRect(x: 0, y: 0, width: firstTableView.bounds.width, height: 50))
-        noResultsLabel.text = "搜尋不到文章"
-        noResultsLabel.textAlignment = .center
-        noResultsLabel.textColor = .gray
-        noResultsLabel.isHidden = true
-        firstTableView.addSubview(noResultsLabel)
-        self.view.bringSubviewToFront(noResultsLabel)
-        
-        // Indicator
-        activityIndicator = UIActivityIndicatorView(style: .large)
-        activityIndicator.center = self.view.center
-        activityIndicator.hidesWhenStopped = true
-        self.view.addSubview(activityIndicator)
-        
-        
-        searchArticlesBar.delegate = self
-        ServeoManager.shared.serveoGroup.notify(queue: .main) {
-            if self.lastSearchResults == nil {
-                self.getAllArticle()
-            }
-        }
-        // Network check
-        monitor.pathUpdateHandler = { path in
-            if path.status == .satisfied {
-                print("We're connected!")
-            } else {
-                DispatchQueue.main.async {
-                    ShowMessageManager.shared.showAlert(on: self, title: "網路連接失敗", message: "請檢查您的網絡設置")
-                }
-            }
-        }
-        let queue = DispatchQueue(label: "NetworkMonitor")
-        monitor.start(queue: queue)
-
-        
-        NotificationCenter.default.addObserver(self, selector: #selector(userDidLogout), name: Notification.Name("UserDidLogout"), object: nil)
-        NotificationCenter.default.addObserver(self, selector: #selector(userDidDelete), name: Notification.Name("UserDidDelete"), object: nil)
+        initialSetup()
+        registerNotifications()
+        monitorNetwork()
+        self.view.backgroundColor = UIColor.lightGreen
     }
     
     override func viewWillAppear(_ animated: Bool) {
-        ServeoManager.shared.serveoGroup.notify(queue: .main) {
-            if self.lastSearchResults == nil {
-                self.getAllArticle()
-            }
-        }
+        fetchInitialArticlesIfNeeded()
     }
     
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
         self.view.endEditing(true)
     }
     
-    func getAllArticle() {
-        let group = DispatchGroup()
-        activityIndicator.startAnimating()
-        self.firstTableView.isHidden = true
-        // Get all articles information.
+    // MARK: - Initial Setup
+    private func initialSetup() {
+        setupSearchBar()
+        setupTableViewContainer()
+        setupTableView()
+        setupNoResultsLabel()
+        setupActivityIndicator()
+    }
+    
+    private func setupTableViewContainer() {
+        tableViewContainer.frame = CGRect(x: 0, y: searchArticlesBar.frame.maxY, width: self.view.bounds.width, height: self.view.bounds.height - searchArticlesBar.frame.maxY)
+        tableViewContainer.backgroundColor = .clear
+        tableViewContainer.shadow()
+        self.view.addSubview(tableViewContainer)
+    }
+    
+    private func setupTableView() {
+        firstTableView.frame = tableViewContainer.bounds
+        firstTableView.layer.cornerRadius = 10
+        firstTableView.clipsToBounds = true
+        tableViewContainer.addSubview(firstTableView)
+    }
+    
+    private func setupSearchBar() {
+        searchArticlesBar.backgroundImage = UIImage()
+        searchArticlesBar.searchTextField.backgroundColor = .white
+        searchArticlesBar.searchTextField.layer.borderWidth = 0.0
+        searchArticlesBar.shadow()
+        searchArticlesBar.delegate = self
+    }
+    
+    private func setupNoResultsLabel() {
+        noResultsLabel = firstTableView.addNoResultsLabel(withText: "搜尋不到文章")
+    }
+    
+    private func setupActivityIndicator() {
+        activityIndicator = UIActivityIndicatorView(style: .large)
+        activityIndicator.center = self.view.center
+        activityIndicator.hidesWhenStopped = true
+        self.view.addSubview(activityIndicator)
+    }
+    
+    private func fetchInitialArticlesIfNeeded() {
+        if self.lastSearchResults == nil {
+            self.getAllArticle()
+        }
+    }
+    
+    private func getAllArticle() {
+            let group = DispatchGroup()
+            activityIndicator.startAnimating()
+            self.firstTableView.isHidden = true
+            
+            group.enter()
+            fetchArticles(group: group)
+            
+            group.notify(queue: .main) {
+                self.activityIndicator.stopAnimating()
+                self.firstTableView.reloadData()
+                self.firstTableView.isHidden = false
+            }
+        }
+    
+    private func fetchArticles(group: DispatchGroup) {
         NetworkManager.shared.getAllArticleIDandTitle { result, statusCode, error in
             if let articles = result?.articles {
                 ArticleManager.shared.allArticle = articles
                 for article in articles {
                     group.enter()
-                    // Get all users by article information.
-                    NetworkManager.shared.getUserByArticleID(articleID: article.article_id) { result, statusCode, error in
-                        if let users = result?.user {
-                            UserManager.shared.userByArticle.append(users)
-                        }
-                        group.leave()
+                    self.fetchUsersByArticleID(article: article, group: group)
+                }
+            }
+            group.leave()
+        }
+    }
+    
+    private func fetchUsersByArticleID(article: Articles, group: DispatchGroup) {
+        NetworkManager.shared.getUserByArticleID(articleID: article.article_id) { result, statusCode, error in
+            if let users = result?.user {
+                UserManager.shared.userByArticle.append(users)
+            }
+            group.leave()
+        }
+    }
+    
+    
+    private func monitorNetwork() {
+        monitor.pathUpdateHandler = { path in
+            self.monitor.pathUpdateHandler = { path in
+                if path.status == .satisfied {
+                    print("We're connected!")
+                } else {
+                    DispatchQueue.main.async {
+                        ShowMessageManager.shared.showAlert(on: self, title: "網路連接失敗", message: "請檢查您的網絡設置")
                     }
                 }
             }
-            // Comfirm all async execution done.
-            group.notify(queue: .main) {
-                DispatchQueue.main.async {
-                    self.activityIndicator.stopAnimating()
-                    self.firstTableView.reloadData()
-                    self.firstTableView.isHidden = false
-                }
-            }
         }
+    }
+    
+    // MARK: - Notifications
+    private func registerNotifications() {
+        NotificationCenter.default.addObserver(self, selector: #selector(userDidLogout), name: Notification.Name("UserDidLogout"), object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(userDidDelete), name: Notification.Name("UserDidDelete"), object: nil)
     }
     
     @objc func userDidLogout() {
@@ -117,7 +150,7 @@ class FirstViewController: UIViewController {
     @objc func userDidDelete() {
         ShowMessageManager.shared.showToastGlobal(message: "刪除帳號成功")
     }
-
+    
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         if segue.identifier == "showArticleSegue",
            let showArticleTableVC = segue.destination as? ShowArticleTableVC,
@@ -185,12 +218,12 @@ extension FirstViewController: UISearchBarDelegate {
                     UserManager.shared.userByArticle.removeAll()
                     self.activityIndicator.stopAnimating()
                     self.firstTableView.isHidden = false
-                    self.noResultsLabel.isHidden = false 
+                    self.noResultsLabel.isHidden = false
                     self.firstTableView.tableFooterView = self.noResultsLabel
                     self.firstTableView.setContentOffset(CGPoint(x: 0, y: 0), animated: false)
                     self.firstTableView.reloadData()
                 }
             }
         }
-    }  
+    }
 }

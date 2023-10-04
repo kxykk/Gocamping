@@ -59,6 +59,11 @@
 		3D91DDCB2A6ECFEE00BECC28 /* FifthVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3D91DDCA2A6ECFEE00BECC28 /* FifthVC.swift */; };
 		3D9FB8A12AB03B9000A8ED8C /* CacheManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3D9FB8A02AB03B9000A8ED8C /* CacheManager.swift */; };
 		3DA0C27F2AB989DB001C666E /* GooglePlacesManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3DA0C27E2AB989DB001C666E /* GooglePlacesManager.swift */; };
+		3DCCBBBE2ACCECAD007AB847 /* UIColor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3DCCBBBD2ACCECAD007AB847 /* UIColor.swift */; };
+		3DCCBBC02ACD312D007AB847 /* UIView+shadow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3DCCBBBF2ACD312D007AB847 /* UIView+shadow.swift */; };
+		3DCCBBC22ACD332E007AB847 /* UIView+roundCorners.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3DCCBBC12ACD332E007AB847 /* UIView+roundCorners.swift */; };
+		3DCCBBC42ACD4B15007AB847 /* UIView+NoResultLabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3DCCBBC32ACD4B15007AB847 /* UIView+NoResultLabel.swift */; };
+		3DCCBBC72ACD7D05007AB847 /* UITableVIew+shadow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3DCCBBC62ACD7D05007AB847 /* UITableVIew+shadow.swift */; };
 		3DD52CD22A8468D200040B91 /* UIImage+Resize.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3DD52CD12A8468D200040B91 /* UIImage+Resize.swift */; };
 		3DE00AF92A9862210032504D /* EditArticleTableVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3DE00AF82A9862210032504D /* EditArticleTableVC.swift */; };
 		3DE666D72A80730600130FEC /* ThirdTableView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3DE666D62A80730600130FEC /* ThirdTableView.swift */; };
@@ -124,6 +129,11 @@
 		3D91DDCA2A6ECFEE00BECC28 /* FifthVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FifthVC.swift; sourceTree = "<group>"; };
 		3D9FB8A02AB03B9000A8ED8C /* CacheManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CacheManager.swift; sourceTree = "<group>"; };
 		3DA0C27E2AB989DB001C666E /* GooglePlacesManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GooglePlacesManager.swift; sourceTree = "<group>"; };
+		3DCCBBBD2ACCECAD007AB847 /* UIColor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIColor.swift; sourceTree = "<group>"; };
+		3DCCBBBF2ACD312D007AB847 /* UIView+shadow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIView+shadow.swift"; sourceTree = "<group>"; };
+		3DCCBBC12ACD332E007AB847 /* UIView+roundCorners.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIView+roundCorners.swift"; sourceTree = "<group>"; };
+		3DCCBBC32ACD4B15007AB847 /* UIView+NoResultLabel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIView+NoResultLabel.swift"; sourceTree = "<group>"; };
+		3DCCBBC62ACD7D05007AB847 /* UITableVIew+shadow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UITableVIew+shadow.swift"; sourceTree = "<group>"; };
 		3DD52CD12A8468D200040B91 /* UIImage+Resize.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIImage+Resize.swift"; sourceTree = "<group>"; };
 		3DE00AF82A9862210032504D /* EditArticleTableVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditArticleTableVC.swift; sourceTree = "<group>"; };
 		3DE666D62A80730600130FEC /* ThirdTableView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThirdTableView.swift; sourceTree = "<group>"; };
@@ -212,7 +222,7 @@
 			children = (
 				3D87B0892ABC1A5A0016583A /* TabbarController */,
 				3D87B0882ABC1A080016583A /* Singleton */,
-				3D6560D42A8377820086CA0E /* Function */,
+				3D6560D42A8377820086CA0E /* Extension */,
 				3D893B5A2A7FF722003ABFFE /* Cell */,
 				3D09E8C72A8086FC00609A3B /* Struct */,
 			);
@@ -246,14 +256,19 @@
 			path = Font;
 			sourceTree = "<group>";
 		};
-		3D6560D42A8377820086CA0E /* Function */ = {
+		3D6560D42A8377820086CA0E /* Extension */ = {
 			isa = PBXGroup;
 			children = (
 				3DD52CD12A8468D200040B91 /* UIImage+Resize.swift */,
-				3D4A7CD62AA8608D001B8A45 /* UIFont+custom.swift */,
 				3D4A7CD82AA8D279001B8A45 /* UIimage+thumbnail.swift */,
+				3D4A7CD62AA8608D001B8A45 /* UIFont+custom.swift */,
+				3DCCBBBD2ACCECAD007AB847 /* UIColor.swift */,
+				3DCCBBBF2ACD312D007AB847 /* UIView+shadow.swift */,
+				3DCCBBC12ACD332E007AB847 /* UIView+roundCorners.swift */,
+				3DCCBBC32ACD4B15007AB847 /* UIView+NoResultLabel.swift */,
+				3DCCBBC62ACD7D05007AB847 /* UITableVIew+shadow.swift */,
 			);
-			path = Function;
+			path = Extension;
 			sourceTree = "<group>";
 		};
 		3D87B0882ABC1A080016583A /* Singleton */ = {
@@ -445,6 +460,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				3DCCBBC02ACD312D007AB847 /* UIView+shadow.swift in Sources */,
 				3DE00AF92A9862210032504D /* EditArticleTableVC.swift in Sources */,
 				3D91DDC92A6ECFE200BECC28 /* FourthVC.swift in Sources */,
 				3D73E1782A821706007DBD85 /* RegisterVC.swift in Sources */,
@@ -462,11 +478,13 @@
 				3D09E8D02A80C3FB00609A3B /* ImageCell.swift in Sources */,
 				3D7776562A93C542002E9CD0 /* MyArticleTableVC.swift in Sources */,
 				3D707D1C2A95F4060000506D /* ShowImageCell.swift in Sources */,
+				3DCCBBBE2ACCECAD007AB847 /* UIColor.swift in Sources */,
 				3D91DDC72A6ECFD700BECC28 /* ThirdVC.swift in Sources */,
 				3D7776582A93C554002E9CD0 /* MyCollectionTableVC.swift in Sources */,
 				3D7776102A8DD5BB002E9CD0 /* CustomTabbarController.swift in Sources */,
 				3D005AF52AB15C0A008172A5 /* EditProfileVC.swift in Sources */,
 				3D32B9192A7099D400AFB823 /* User.swift in Sources */,
+				3DCCBBC22ACD332E007AB847 /* UIView+roundCorners.swift in Sources */,
 				3D707D142A94AFCD0000506D /* ShowArticleTableVC.swift in Sources */,
 				3D707D0C2A94ACF10000506D /* ShowUserCell.swift in Sources */,
 				3D893B5D2A7FF7CC003ABFFE /* SecondTableView.swift in Sources */,
@@ -477,6 +495,7 @@
 				3D32B9232A70A9D900AFB823 /* Image.swift in Sources */,
 				3D32B9252A70B15F00AFB823 /* Comment.swift in Sources */,
 				3DE666D72A80730600130FEC /* ThirdTableView.swift in Sources */,
+				3DCCBBC72ACD7D05007AB847 /* UITableVIew+shadow.swift in Sources */,
 				3D22B4472A7CCCE700DFA82A /* FirstTableView.swift in Sources */,
 				3DEECED82A7CA1220034AFBE /* ArticleCell.swift in Sources */,
 				3D011AFC2A6E6810009AFFB7 /* SceneDelegate.swift in Sources */,
@@ -487,6 +506,7 @@
 				3DD52CD22A8468D200040B91 /* UIImage+Resize.swift in Sources */,
 				3D707D122A94AD6D0000506D /* ShowCommentCell.swift in Sources */,
 				3D09E8C92A80881600609A3B /* NotifyCell.swift in Sources */,
+				3DCCBBC42ACD4B15007AB847 /* UIView+NoResultLabel.swift in Sources */,
 				3D32B9212A70A9A800AFB823 /* Text.swift in Sources */,
 				3D707D0E2A94AD050000506D /* ShowTextCell.swift in Sources */,
 				3D87B0872ABB1C350016583A /* ForgetpwVC.swift in Sources */,

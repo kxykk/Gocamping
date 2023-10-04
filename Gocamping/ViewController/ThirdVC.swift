@@ -23,6 +23,7 @@ class ThirdViewController: UIViewController {
     @IBOutlet weak var loginBtnPressed: UIButton!
     @IBOutlet weak var editBtnPressed: UIButton!
     
+    
     var myArticleTableVC: MyArticleTableVC?
     var myCollectionTableVC: MyCollectionTableVC?
     
@@ -34,9 +35,24 @@ class ThirdViewController: UIViewController {
     var otherUserName = ""
     var otherUserImage: UIImage?
     
+    
     override func viewDidLoad() {
         super.viewDidLoad()
-        print("Is from First VC: \(isFromFirstVC)")
+        
+        // Set view
+        userIntroduction.layer.cornerRadius = 10
+        userIntroduction.shadow()
+
+        self.view.backgroundColor = UIColor.lightFlamingoPink
+        self.myArticleTableVC?.tableView.layer.cornerRadius = 10
+        self.myArticleTableVC?.tableView.addShadow()
+        self.myCollectionTableVC?.tableView.layer.cornerRadius = 10
+        self.myCollectionTableVC?.tableView.addShadow()
+        
+        thirdTableViewSegment.shadow()
+        userImage.shadow()
+
+
         
         if let tabBarController = self.tabBarController,
            let viewControllers = tabBarController.viewControllers {
@@ -59,6 +75,7 @@ class ThirdViewController: UIViewController {
                 myCollectionTableVC = childVC
             }
         }
+
         // Follow function 先不要
         followerNumber.isHidden = true
         followingNumber.isHidden = true

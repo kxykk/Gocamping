@@ -24,9 +24,6 @@ class EditProfileVC: UIViewController {
         super.viewDidLoad()
 
         let attributedString = NSMutableAttributedString(string: "自我介紹:")
-        attributedString.addAttribute(NSMutableAttributedString.Key.underlineStyle,
-                                      value: NSUnderlineStyle.single.rawValue,
-                                      range: NSRange(location: 0, length: attributedString.length))
         introLabel.attributedText = attributedString
         
         introTextView.layer.borderWidth = 1.0

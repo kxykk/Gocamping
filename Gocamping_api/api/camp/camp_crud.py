@@ -49,3 +49,9 @@ def search_camps(db:Session, keyword: str):
         )
     ).all()
     return [result.__dict__ for result in query_results]
+
+def fetch_camp_name_from_db(camp_id: int, db: Session):
+    camp = db.query(CampModel).filter(CampModel.camp_id == camp_id).first()
+    if camp:
+        return camp.camp_name
+    return None

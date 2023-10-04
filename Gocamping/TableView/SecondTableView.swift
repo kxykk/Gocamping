@@ -20,6 +20,7 @@ class SecondTableView: UITableView, UITableViewDelegate, UITableViewDataSource, 
         self.dataSource = self
         self.delegate = self
         setupLocationManager()
+        
     }
         
     required init?(coder: NSCoder) {
@@ -27,6 +28,7 @@ class SecondTableView: UITableView, UITableViewDelegate, UITableViewDataSource, 
         self.dataSource = self
         self.delegate = self
         setupLocationManager()
+        
     }
         
     // UITableViewDataSource
@@ -40,73 +42,39 @@ class SecondTableView: UITableView, UITableViewDelegate, UITableViewDataSource, 
         
         let camps = CampManager.shared.camps
         let campID = camps[indexPath.row].camp_id
-        let imageType = "camp"
         let campName = camps[indexPath.row].camp_name
-        cell.campName.text = "露營地:\n\(campName)"
-        cell.campLocation.text = "縣市:\(camps[indexPath.row].camp_city)"
-        cell.campImage.image = UIImage(named: "風景照")
-//        let group = DispatchGroup()
-//        group.enter()
-//        NetworkManager.shared.getCampImage(campID: campID) { result, statusCode, error in
-//            if let error = error {
-//                    print("Get camp image error: \(error)")
-//                    cell.campImage.image = nil
-//                    return
-//                }
-//                guard let imageURL = result?.image?.imageURL else {
-//                    cell.campImage.image = UIImage(named: "風景照")
-//                    return
-//                }
-//            if let image = CacheManager.shared.load(filename: imageURL) {
-//                cell.campImage.image = image
-//            } else {
-//                NetworkManager.shared.downloadImage(imageURL: imageURL) { data, error in
-//                    if let error = error {
-//                        print("Download image error: \(error)")
-//                        return
-//                    }
-//                    if let data = data, let image = UIImage(data: data) {
-//                        cell.campImage.image = image
-//                        try? CacheManager.shared.save(data: data, filename: imageURL)
-//                    }
-//                }
-//            }
-//            group.leave()
-//        }
-//
-//        group.enter()
-//        GooglePlacesmanager.shared.fetchPlaceID(keyword: campName) { placeID in
-//            if let placeID = placeID {
-//                print("place:\(placeID)")
-//                GooglePlacesmanager.shared.fetchPlacePhoto(placeID: placeID) { data in
-//                    if let data = data {
-//                        let image = UIImage(data: data)
-//                        let resizeImage = image?.resize(maxEdge: 1024)
-//                        cell.campImage.image = resizeImage
-//                        guard let jpgData = resizeImage?.jpegData(compressionQuality: 0.6) else {
-//                            return
-//                        }
-//                        print("data: \(jpgData)")
-//                        NetworkManager.shared.uploadImage(articleID: nil, userID: nil, campID: campID, imageSortNumber: 0, imageType: imageType, imageData: jpgData) { result, statusCode, error in
-//                            if let error = error {
-//                                assertionFailure("Upload image error: \(error)")
-//                                return
-//                            }
-//                        }
-//                    }
-//                }
-//            }
-//            group.leave()
-//        }
-//
-//        group.notify(queue: .main) {
-//            tableView.reloadData()
-//        }
-        
+        cell.campName.text = campName
+        cell.campLocation.text = camps[indexPath.row].camp_city
+        NetworkManager.shared.getCampsImage(camp_id: campID) { result, statusCode, error in
+            guard let imageURL = result?.image?.imageURL else {
+                cell.campImage.image = UIImage(named: "風景照")
+                return
+            }
+            if let image = CacheManager.shared.load(filename: imageURL) {
+                cell.campImage.image = image
+            } else {
+                NetworkManager.shared.downloadImage(imageURL: imageURL) { data, error in
+                    if let error = error {
+                        print("Download image failed: \(error)")
+                        cell.campImage.image = UIImage(named: "風景照")
+                        return
+                    }
+                    
+                    if let data = data {
+                        cell.campImage.image = UIImage(data: data)
+                        try? CacheManager.shared.save(data: data, filename: imageURL)
+                        DispatchQueue.main.async {
+                            tableView.reloadRows(at: [indexPath], with: .none)
+                        }
+                    }
+                }
+            }
+        }
+        cell.backgroundColor = UIColor.clear
         return cell
     }
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        return 160
+        return 110
     }
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)

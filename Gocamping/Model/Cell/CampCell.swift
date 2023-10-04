@@ -9,7 +9,6 @@ import UIKit
 
 class CampCell: UITableViewCell {
 
-    @IBOutlet weak var campDistance: UILabel!
     @IBOutlet weak var campLocation: UILabel!
     @IBOutlet weak var campName: UILabel!
     @IBOutlet weak var campImage: UIImageView!
@@ -18,6 +17,10 @@ class CampCell: UITableViewCell {
         // Initialization code
         campImage.contentMode = .scaleAspectFill
         campImage.alpha = 0.8
+        campImage.layer.cornerRadius = 10
+        campImage.clipsToBounds = true
+        
+        
     }
 
     override func prepareForReuse() {

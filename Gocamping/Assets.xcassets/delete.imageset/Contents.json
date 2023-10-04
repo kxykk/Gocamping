@@ -1,11 +1,11 @@
 {
   "images" : [
     {
-      "filename" : "icons8-delete-60.png",
       "idiom" : "universal",
       "scale" : "1x"
     },
     {
+      "filename" : "icons8-trash-can-80.png",
       "idiom" : "universal",
       "scale" : "2x"
     },

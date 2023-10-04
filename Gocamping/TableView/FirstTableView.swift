@@ -15,6 +15,7 @@ class FirstTableView: UITableView, UITableViewDelegate, UITableViewDataSource {
         super.init(frame: frame, style: style)
         self.dataSource = self
         self.delegate = self
+        
     }
         
     required init?(coder: NSCoder) {
@@ -33,13 +34,6 @@ class FirstTableView: UITableView, UITableViewDelegate, UITableViewDataSource {
         return ArticleManager.shared.allArticle.count * 2
     }
      
-//    func numberOfSections(in tableView: UITableView) -> Int {
-//        return ArticleManager.shared.allArticle.count
-//    }
-//
-//    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-//        return 2 // 一個 ArticleCell 和一個 UserCell
-//    }
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         if indexPath.row % 2 == 0 {
