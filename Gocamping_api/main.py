@@ -20,7 +20,7 @@ from subprocess import run, PIPE, Popen
 
 app = FastAPI()
 
-app.mount("/root/Gocamping/pictures/", StaticFiles(directory="/root/Gocamping_api/pictures"), name="pictures")
+app.mount("/root/Gocamping/pictures/", StaticFiles(directory="/root/Gocamping/pictures"), name="pictures")
 app.include_router(user_router, prefix="/user", tags=["user"])
 app.include_router(article_router, prefix="/article", tags=["article"])
 app.include_router(article_collection_router, prefix="/article_collection", tags=["article_collection"])
