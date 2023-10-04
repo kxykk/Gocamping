@@ -20,7 +20,7 @@ jobs:
           username: ${{ secrets.LINODE_USER }}
           key: ${{ secrets.LINODE_KEY }}
           script: |
-            cd /root/Gocamping_api
+            cd /root/Gocamping
             GIT_SSH_COMMAND="ssh -i /root/.ssh/github" git pull
             GIT_SSH_COMMAND="ssh -i /root/.ssh/github" git rev-parse HEAD
             sudo systemctl restart uvicorn.service
