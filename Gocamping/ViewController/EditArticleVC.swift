@@ -7,13 +7,9 @@
 
 import UIKit
 
-protocol EditArticleDelegate: AnyObject {
-    func updateContents(_ contents: [Content])
-}
 
 class EditArticleVC: UIViewController, EditArticleDelegate {
     
-    //    @IBOutlet weak var editTableView: EditArticleTableView!
     @IBOutlet weak var containerTableView: UIView!
     
     var articleID = 0
@@ -23,26 +19,23 @@ class EditArticleVC: UIViewController, EditArticleDelegate {
     var contents = [Content]()
     
     
-    
+    // MARK: - Lifecycle
     override func viewDidLoad() {
         super.viewDidLoad()
-        
-        // Do any additional setup after loading the view.
-        
+        setupChildViewController()
+    }
+
+    // MARK: - Initial setup
+    private func setupChildViewController() {
         for child in children {
             if let childVC = child as? EditArticleTableVC {
                 editTableViewController = childVC
                 editTableViewController?.editArticleDelegate = self
-                
             }
         }
     }
     
-    override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
-        self.view.endEditing(true)
-    }
-    
-    //MARK: Button
+    //MARK: - Button actions
     @IBAction func addImageBtnPressed(_ sender: Any) {
         let imagePicker = UIImagePickerController()
         imagePicker.delegate = editTableViewController
@@ -51,43 +44,52 @@ class EditArticleVC: UIViewController, EditArticleDelegate {
     }
     
     @IBAction func saveBtnPressed(_ sender: Any) {
-        // The final contents
+        finalcontents()
+        
+        if !isFromEdit {
+            postContents()
+        } else {
+            updateContents()
+        }
+        
+    }
+    // MARK: - Post or update article contents
+    private func finalcontents() {
         editTableViewController?.editArticleDelegate = self
         if let updatedContents = editTableViewController?.contents {
             self.contents = updatedContents
         }
-        
-        if !isFromEdit { // Else from editTableVC.articleID
-            let articleID = ArticleManager.shared.createArticleID
-            NetworkManager.shared.postContent(articleID: articleID, contents: contents) { result, status, error in
-                if let error = error {
-                    assertionFailure("Post content error: \(error)")
-                    return
-                }
-                print("articleID = \(self.articleID)")
-                NotificationCenter.default.post(name: Notification.Name("postContentSuccess"), object: nil)
-                
-                self.navigationController?.popToRootViewController(animated: true)
+    }
+    
+    private func postContents() {
+        let articleID = ArticleManager.shared.createArticleID
+        NetworkManager.shared.postContent(articleID: articleID, contents: contents) { result, status, error in
+            if let error = error {
+                ShowMessageManager.shared.showToastGlobal(message: "新增文章內容失敗！")
+                return
             }
-        } else {
-            NetworkManager.shared.updateArticleContent(articleID: articleID, newContent: contents) { result, statusCode, error in
-                if let error = error {
-                    assertionFailure("Update content error: \(error)")
-                    return
-                }
-                NotificationCenter.default.post(name: Notification.Name("editContentSuccess"), object: nil)
-                
-                self.navigationController?.popToRootViewController(animated: true)
-            }
+            NotificationCenter.default.post(name: Notification.Name("postContentSuccess"), object: nil)
+            self.navigationController?.popToRootViewController(animated: true)
         }
     }
-            
-    func updateContents(_ contents: [Content]) {
-        self.contents = contents
+
+    private func updateContents() {
+        NetworkManager.shared.updateArticleContent(articleID: articleID, newContent: contents) { result, statusCode, error in
+            if let error = error {
+                ShowMessageManager.shared.showToastGlobal(message: "更新文章內容失敗！")
+                return
+            }
+            NotificationCenter.default.post(name: Notification.Name("editContentSuccess"), object: nil)
+            self.navigationController?.popToRootViewController(animated: true)
+        }
     }
+    
+    // MARK: - End editing
+    override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
+        self.view.endEditing(true)
+    }
+            
      // MARK: - Navigation
-     
-     // In a storyboard-based application, you will often want to do a little preparation before navigation
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         if segue.identifier == "editSegue",
            let editArticleTableVC = segue.destination as? EditArticleTableVC{
@@ -99,4 +101,12 @@ class EditArticleVC: UIViewController, EditArticleDelegate {
             }
         }
     }
+    //MARK: - Contents update
+    func updateContents(_ contents: [Content]) {
+        self.contents = contents
+    }
 }
+protocol EditArticleDelegate: AnyObject {
+    func updateContents(_ contents: [Content])
+}
+

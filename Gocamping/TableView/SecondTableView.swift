@@ -15,31 +15,54 @@ class SecondTableView: UITableView, UITableViewDelegate, UITableViewDataSource, 
     let locationManager = CLLocationManager()
     var currentLocation: CLLocation?
     
+    // MARK: Initialize
     override init(frame: CGRect, style: UITableView.Style) {
         super.init(frame: frame, style: style)
-        self.dataSource = self
-        self.delegate = self
+        commonInit()
         setupLocationManager()
-        
     }
         
     required init?(coder: NSCoder) {
         super.init(coder: coder)
+        commonInit()
+        setupLocationManager()
+    }
+    
+    private func commonInit() {
         self.dataSource = self
         self.delegate = self
-        setupLocationManager()
-        
+    }
+    
+    private func setupLocationManager() {
+        locationManager.delegate = self
+        locationManager.requestWhenInUseAuthorization()
+        locationManager.startUpdatingLocation()
     }
         
-    // UITableViewDataSource
+    // MARK: - UITableViewDataSource
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return CampManager.shared.camps.count
     }
+    
+    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        return 110
+    }
         
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        return configuraCampCell(for: tableView, at: indexPath)
+    }
+    
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        
+        tableView.deselectRow(at: indexPath, animated: true)
+        
+        let selectedCamp = CampManager.shared.camps[indexPath.row]
+        navigateToCamp(camp: selectedCamp)
+    }
+    
+    private func configuraCampCell(for tableView: UITableView, at indexPath: IndexPath) -> UITableViewCell {
         
         let cell = tableView.dequeueReusableCell(withIdentifier: "campCell", for: indexPath) as! CampCell
-        
         let camps = CampManager.shared.camps
         let campID = camps[indexPath.row].camp_id
         let campName = camps[indexPath.row].camp_name
@@ -73,14 +96,9 @@ class SecondTableView: UITableView, UITableViewDelegate, UITableViewDataSource, 
         cell.backgroundColor = UIColor.clear
         return cell
     }
-    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        return 110
-    }
-    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        tableView.deselectRow(at: indexPath, animated: true)
+    
+    private func getCampImage() {
         
-        let selectedCamp = CampManager.shared.camps[indexPath.row]
-        navigateToCamp(camp: selectedCamp)
     }
 
     
@@ -116,11 +134,7 @@ class SecondTableView: UITableView, UITableViewDelegate, UITableViewDataSource, 
         }
     }
     
-    func setupLocationManager() {
-        locationManager.delegate = self
-        locationManager.requestWhenInUseAuthorization()
-        locationManager.startUpdatingLocation()
-    }
+
     
     func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
         if let location = locations.first {

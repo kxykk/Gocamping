@@ -17,7 +17,6 @@ class ThirdViewController: UIViewController {
     @IBOutlet weak var followingNumber: UILabel!
     @IBOutlet weak var userName: UILabel!
     @IBOutlet weak var userImage: UIImageView!
-    
     @IBOutlet var containrViews: [UIView]!
     @IBOutlet weak var createArticleBtnPressed: UIButton!
     @IBOutlet weak var loginBtnPressed: UIButton!
@@ -30,30 +29,48 @@ class ThirdViewController: UIViewController {
     var isFromEdit = false
     var isFromFirstVC = false
     var userID = 0
-    
     var otherUserIntroduction = ""
     var otherUserName = ""
     var otherUserImage: UIImage?
     
-    
+    // MARK: - Lifecycle
     override func viewDidLoad() {
         super.viewDidLoad()
+        initialSetup()
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        updateState()
+    }
+    
+    // MARK: - Initial Setup
+    private func initialSetup() {
+        setupUI()
+        setupChildViewControllers()
+        setupDelegate()
+        fetchUserDataIfNeeded()
+    }
+    
+    // MARK: - Update User State
+    private func updateState() {
+        setupUser()
+        registerNotifications()
+        updateUI()
+        getCollectedArticle()
+        getMyArticle()
+        updateUIBaseOnLoginStates()
+    }
+    
+    private func setupUser() {
         
-        // Set view
-        userIntroduction.layer.cornerRadius = 10
-        userIntroduction.shadow()
-
-        self.view.backgroundColor = UIColor.lightFlamingoPink
-        self.myArticleTableVC?.tableView.layer.cornerRadius = 10
-        self.myArticleTableVC?.tableView.addShadow()
-        self.myCollectionTableVC?.tableView.layer.cornerRadius = 10
-        self.myCollectionTableVC?.tableView.addShadow()
-        
-        thirdTableViewSegment.shadow()
-        userImage.shadow()
-
-
-        
+        if !isFromFirstVC {
+            userID = UserDefaults.standard.integer(forKey: userIDKey)
+            userName.text = UserDefaults.standard.string(forKey: userNameKey)
+        }
+    }
+    
+    private func setupDelegate() {
         if let tabBarController = self.tabBarController,
            let viewControllers = tabBarController.viewControllers {
             
@@ -64,67 +81,39 @@ class ThirdViewController: UIViewController {
                 }
             }
         }
+    }
+    
+    // MARK: - Setup UI
+    private func setupUI() {
         
-        for child in children {
-            if let childVC = child as? MyArticleTableVC {
-                myArticleTableVC = childVC
-            }
-        }
-        for child in children {
-            if let childVC = child as? MyCollectionTableVC {
-                myCollectionTableVC = childVC
-            }
-        }
-
+        self.view.backgroundColor = UIColor.lightFlamingoPink
+        
+        userIntroduction.layer.cornerRadius = 10
+        userIntroduction.shadow()
+        
+        thirdTableViewSegment.shadow()
+        
+        userImage.shadow()
+        
+        self.myArticleTableVC?.tableView.layer.cornerRadius = 10
+        self.myArticleTableVC?.tableView.addShadow()
+        
+        self.myCollectionTableVC?.tableView.layer.cornerRadius = 10
+        self.myCollectionTableVC?.tableView.addShadow()
+        
         // Follow function 先不要
         followerNumber.isHidden = true
         followingNumber.isHidden = true
         toFollow.isHidden = true
         
-        // CreateBtnPressed frame
         createArticleBtnPressed.setImage(UIImage(named: "plus"), for: .normal)
         createArticleBtnPressed.setTitle("", for: .normal)
         createArticleBtnPressed.setTitleColor(.black, for: .normal)
         createArticleBtnPressed.imageView?.contentMode = .scaleAspectFit
-        
-        if isFromFirstVC {
-            let dispatchGroup = DispatchGroup()
-            
-            dispatchGroup.enter()
-            NetworkManager.shared.getUser(userID: userID) { result, statusCode, error in
-                if let user = result?.user {
-                    self.otherUserIntroduction = user.introduction ?? "無簡介"
-                    self.otherUserName = user.name
-                }
-                dispatchGroup.leave()
-            }
-            
-            dispatchGroup.enter()
-            NetworkManager.shared.getImageURLByUserID(userID: userID) { result, statusCode, error in
-                guard let result = result, let imageURL = result.image?.imageURL else {
-                    assertionFailure("Get image Fail: \(String(describing: result))")
-                    return
-                }
-                NetworkManager.shared.downloadImage(imageURL: imageURL) { data, error in
-                    if let data = data {
-                        try? CacheManager.shared.save(data: data, filename: imageURL)
-                        self.otherUserImage = UIImage(data: data)
-                    }
-                    dispatchGroup.leave()
-                }
-            }
-            
-            dispatchGroup.notify(queue: .main) {
-                self.updateUIForFirstVC()
-            }
-        }
     }
-    override func viewWillAppear(_ animated: Bool) {
+    
+    private func updateUI() {
         
-        NotificationCenter.default.addObserver(self, selector: #selector(loginSuccess), name: NSNotification.Name("userDidLogin"), object: nil)
-        NotificationCenter.default.addObserver(self, selector: #selector(postContentSuccess), name: NSNotification.Name("postContentSuccess"), object: nil)
-        NotificationCenter.default.addObserver(self, selector: #selector(editContentSuccess), name: NSNotification.Name("editContentSuccess"), object: nil)
-        NotificationCenter.default.addObserver(self, selector: #selector(userProfileDidUpdate), name: NSNotification.Name("userProfileDidUpdate"), object: nil)
         if isFromFirstVC {
             updateUIForFirstVC()
         } else {
@@ -144,72 +133,9 @@ class ThirdViewController: UIViewController {
                 }
             }
         }
-            
-        getCollectedArticle()
-        getMyArticle()
-        updateUIBaseOnLoginStates()
     }
     
-    func getCollectedArticle() {
-        if !isFromFirstVC {
-            userID = UserDefaults.standard.integer(forKey: userIDKey)
-        }
-        if userID != 0 {
-            NetworkManager.shared.getCollectedArticle(userID: userID) { result, statusCode, error in
-                if let error = error {
-                    assertionFailure("Get collected articles error: \(error)")
-                    return
-                }
-                if let articles = result?.articles {
-                    DispatchQueue.main.async {
-                        ArticleManager.shared.myCollectedArticle = articles
-                        self.myCollectionTableVC?.tableView.reloadData()
-                    }
-                }
-            }
-        } else {
-            ArticleManager.shared.myCollectedArticle = []
-        }
-    }
-    
-    func getMyArticle() {
-        if !isFromFirstVC {
-            userName.text = UserDefaults.standard.string(forKey: userNameKey)
-        }
-        
-        let dispatchGroup = DispatchGroup()
-        if !isFromFirstVC {
-            userID = UserDefaults.standard.integer(forKey: userIDKey)
-        }
-        if userID != 0 {
-            dispatchGroup.enter()
-            NetworkManager.shared.getMyArticle(userID: userID) { result, statusCode, error in
-                if let error = error {
-                    assertionFailure("Get my articles error: \(error)")
-                    return
-                }
-                if let articles = result?.articles {
-                    ArticleManager.shared.myArticle = articles
-                    let articleCount = ArticleManager.shared.myArticle.count
-                    let content = "有\(articleCount)篇文章"
-                    self.howManyArticle.text = content
-                }
-                dispatchGroup.leave()
-                dispatchGroup.notify(queue: .main, execute: {
-                    self.myArticleTableVC?.tableView.reloadData()
-                })
-            }
-        } else {
-            ArticleManager.shared.allArticle = []
-        }
-        
-        
-    }
-    
-    func updateUIBaseOnLoginStates() {
-        if !isFromFirstVC {
-            userID = UserDefaults.standard.integer(forKey: userIDKey)
-        }
+    private func updateUIBaseOnLoginStates() {
         if userID == 0 {
             loginBtnPressed.isHidden = false
             containrViews.forEach { $0.isHidden = true }
@@ -224,11 +150,11 @@ class ThirdViewController: UIViewController {
         }
     }
     
-    func updateUIForFirstVC() {
+    private func updateUIForFirstVC() {
         userIntroduction.text = otherUserIntroduction
         createArticleBtnPressed.isHidden = true
         editBtnPressed.isHidden = true
-
+        
         if let unwrappedImage = otherUserImage {
             let image = UIImage.thumbnail(from: unwrappedImage)
             userImage?.image = image
@@ -238,6 +164,7 @@ class ThirdViewController: UIViewController {
         userName.text = otherUserName
     }
     
+    // MARK: - Button & Segment actions
     @objc func postContentSuccess() {
         ShowMessageManager.shared.showToastGlobal(message: "創建文章成功")
     }
@@ -248,14 +175,13 @@ class ThirdViewController: UIViewController {
         ShowMessageManager.shared.showToastGlobal(message: "編輯成功")
     }
     
-    @IBAction func createArticleBtnPressed(_ sender: Any) {
-        
+    @objc func loginSuccess() {
+        if let hasUserName = UserDefaults.standard.string(forKey: userNameKey) {
+            ShowMessageManager.shared.showToastGlobal(message: "登入成功 \(hasUserName)")
+        }
     }
     
     @IBAction func editBtnPressed(_ sender: UIButton) {
-        if !isFromFirstVC {
-            userID = UserDefaults.standard.integer(forKey: userIDKey)
-        }
         if userID == 0 {
             ShowMessageManager.shared.showToastGlobal(message: "您尚未登入！")
             return
@@ -265,9 +191,6 @@ class ThirdViewController: UIViewController {
     }
     
     @IBAction func segmentChanged(_ sender: UISegmentedControl) {
-        if !isFromFirstVC {
-            userID = UserDefaults.standard.integer(forKey: userIDKey)
-        }
         if userID == 0 {
             createArticleBtnPressed.isHidden = true
             return
@@ -288,35 +211,129 @@ class ThirdViewController: UIViewController {
         }
     }
     
-    @objc func loginSuccess() {
-        if let hasUserName = UserDefaults.standard.string(forKey: userNameKey) {
-            ShowMessageManager.shared.showToastGlobal(message: "登入成功 \(hasUserName)")
+    // MARK: - Fetch user data
+    private func fetchUserDataIfNeeded() {
+        if isFromFirstVC {
+            let group = DispatchGroup()
+            getUserInfo(group: group)
+            getUserImage(group: group)
+            group.notify(queue: .main) {
+                self.updateUIForFirstVC()
+            }
         }
     }
     
-    // MARK: - Navigation
+    private func getUserInfo(group: DispatchGroup) {
+        group.enter()
+        NetworkManager.shared.getUser(userID: userID) { result, statusCode, error in
+            if let user = result?.user {
+                self.otherUserIntroduction = user.introduction ?? "無簡介"
+                self.otherUserName = user.name
+            }
+            group.leave()
+        }
+    }
     
-    // In a storyboard-based application, you will often want to do a little preparation before navigation
+    private func getUserImage(group: DispatchGroup) {
+        group.enter()
+        NetworkManager.shared.getImageURLByUserID(userID: userID) { result, statusCode, error in
+            guard let result = result, let imageURL = result.image?.imageURL else {
+                self.otherUserImage = UIImage(named: "userDefault")
+                return
+            }
+            NetworkManager.shared.downloadOrLoadImage(imageURL: imageURL) { data, error in
+                if let data = data {
+                    self.otherUserImage = UIImage(data: data)
+                }
+                group.leave()
+            }
+        }
+        
+    }
+    
+    // MARK: - Get article lists
+    func getCollectedArticle() {
+        if userID != 0 {
+            NetworkManager.shared.getCollectedArticle(userID: userID) { result, statusCode, error in
+                if let articles = result?.articles {
+                    ArticleManager.shared.myCollectedArticle = articles
+                    DispatchQueue.main.async {
+                        self.myCollectionTableVC?.tableView.reloadData()
+                    }
+                }
+            }
+        }
+    }
+    
+    private func getMyArticle() {
+        if userID != 0 {
+            NetworkManager.shared.getMyArticle(userID: userID) { result, statusCode, error in
+                if let articles = result?.articles {
+                    ArticleManager.shared.myArticle = articles
+                    
+                    let articleCount = ArticleManager.shared.myArticle.count
+                    let content = "有\(articleCount)篇文章"
+                    self.howManyArticle.text = content
+                    DispatchQueue.main.async {
+                        self.myArticleTableVC?.tableView.reloadData()
+                    }
+                }
+            }
+        }
+    }
+    
+    // MARK: - Setup childViewController
+    private func setupChildViewControllers() {
+        for child in children {
+            if let childVC = child as? MyArticleTableVC {
+                myArticleTableVC = childVC
+            }
+            if let childVC = child as? MyCollectionTableVC {
+                myCollectionTableVC = childVC
+            }
+        }
+    }
+
+    // MARK: - Notification
+    private func registerNotifications() {
+        NotificationCenter.default.addObserver(self, selector: #selector(loginSuccess), name: NSNotification.Name("userDidLogin"), object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(postContentSuccess), name: NSNotification.Name("postContentSuccess"), object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(editContentSuccess), name: NSNotification.Name("editContentSuccess"), object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(userProfileDidUpdate), name: NSNotification.Name("userProfileDidUpdate"), object: nil)
+    }
+    
+
+    // MARK: - Navigation
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        
         if  segue.identifier == "myArticleSegue", let myArticleTableVC = segue.destination as? MyArticleTableVC {
             self.myArticleTableVC = myArticleTableVC
             if isFromFirstVC {
                 myArticleTableVC.isFromFirstVC = true
             }
-        } else if segue.identifier == "collectedArticleSegue", let myCollectionTableVC = segue.destination as? MyCollectionTableVC {
+        }
+        
+        else if segue.identifier == "collectedArticleSegue", let myCollectionTableVC = segue.destination as? MyCollectionTableVC {
             if isFromFirstVC {
                 myCollectionTableVC.isFromFirstVC = true
             }
             self.myCollectionTableVC = myCollectionTableVC
-        } else if segue.identifier == "editProfileSegue", let editProfileVC = segue.destination as? EditProfileVC {
+        }
+        
+        else if segue.identifier == "editProfileSegue", let editProfileVC = segue.destination as? EditProfileVC {
             editProfileVC.delegate = self
-        } else if segue.identifier == "loginSegue", let loginVC = segue.destination as? LoginVC {
+        }
+        
+        else if segue.identifier == "loginSegue", let loginVC = segue.destination as? LoginVC {
             loginVC.loginVCDelegate = self
         }
+        
     }
     
     
 }
+
+// MARK: - Extension for delegates
 extension ThirdViewController: EditProfileDelegate {
     func didUpdateIntroduction(_ introduction: String) {
         userIntroduction.text = introduction
@@ -330,7 +347,6 @@ extension ThirdViewController: FifthVCDelegate {
     }
     
     func didLogoutSuccessfully() {
-        print("didLogoutSuccessfully called")
         howManyArticle.text = ""
     }
 }
@@ -348,3 +364,4 @@ extension ThirdViewController: LoginVCDelegate {
         }
     }
 }
+

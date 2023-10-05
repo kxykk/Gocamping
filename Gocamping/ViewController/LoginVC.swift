@@ -19,11 +19,15 @@ class LoginVC: UIViewController {
     
     weak var loginVCDelegate: LoginVCDelegate?
     
+    // MARK: - Lifecycle
     override func viewDidLoad() {
         super.viewDidLoad()
-        // Do any additional setup after loading the view.
+        initialSetup()
+        registerNotifications()
+    }
+    // MARK: - Initial setup
+    private func initialSetup() {
         
-        // ShowBtnPressed
         var config = UIButton.Configuration.filled()
         config.image = UIImage(named: "eye_closed")
         config.imagePadding = 5
@@ -32,16 +36,18 @@ class LoginVC: UIViewController {
         showBtnPressed.configuration = config
         
     }
-    
-    override func viewWillAppear(_ animated: Bool) {
+    // MARK: - Notification
+    private func registerNotifications() {
         NotificationCenter.default.addObserver(self, selector: #selector(handleEmailSentNotification), name: NSNotification.Name("EmailSent"), object: nil)
     }
     
-    override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
-        self.view.endEditing(true)
+    // MARK: - Button actions
+    @objc func handleEmailSentNotification(_ notification: Notification) {
+        ShowMessageManager.shared.showToastGlobal(message: "發送信件完成")
     }
     
     @IBAction func showBtnPressed(_ sender: UIButton) {
+        
         var config = showBtnPressed.configuration?.updated(for: sender)
         
         if passwordTextField.isSecureTextEntry {
@@ -53,56 +59,7 @@ class LoginVC: UIViewController {
         }
         
         showBtnPressed.configuration = config
-    }
-    @IBAction func btnLoginPressed(_ sender: Any) {
         
-        if emailTextField.text == "" {
-            ShowMessageManager.shared.showToastGlobal(message: "請輸入帳號(信箱)")
-            return
-        }
-        if passwordTextField.text == "" {
-            ShowMessageManager.shared.showToastGlobal(message: "請輸入密碼")
-            return
-        }
-        guard let email = emailTextField.text, let password = passwordTextField.text else {
-            return
-        }
-        NetworkManager.shared.login(email: email, password: password) { result, statusCode, error in
-            if statusCode == 404 {
-                ShowMessageManager.shared.showToastGlobal(message: "帳號有誤！")
-            } else if statusCode == 401 {
-                ShowMessageManager.shared.showToastGlobal(message: "密碼有誤！")
-            }
-            if let user = result?.user {
-                
-                UserDefaults.standard.set(user.user_id, forKey: userIDKey)
-                userID = UserDefaults.standard.integer(forKey: userIDKey)
-                UserDefaults.standard.set(user.name, forKey: userNameKey)
-                userName = UserDefaults.standard.string(forKey: userNameKey)
-                if result?.user?.introduction != "" {
-                    UserDefaults.standard.set(user.introduction, forKey: introductionKey)
-                }
-                self.navigationController?.popViewController(animated: true)
-                NotificationCenter.default.post(name: NSNotification.Name("userDidLogin"), object: nil)
-                NetworkManager.shared.getImageURLByUserID(userID: userID) { result, statusCode, error in
-                    if let error = error {
-                        assertionFailure("Get image error: \(error)")
-                        return
-                    }
-                    guard let result = result, let imageURL = result.image?.imageURL else{
-                        return
-                    }
-                    UserDefaults.standard.set(imageURL, forKey: imageURLKey)
-                    self.loginVCDelegate?.didUpdateImageURL(imageURL)
-                }
-                
-            }
-            
-        }
-    }
-    
-    @objc func handleEmailSentNotification(_ notification: Notification) {
-        ShowMessageManager.shared.showToastGlobal(message: "發送信件完成")
     }
     
     @IBAction func forgetPWBtnPressed(_ sender: Any) {
@@ -112,23 +69,77 @@ class LoginVC: UIViewController {
         }
     }
     
-    @IBAction func registerBtnPressed(_ sender: Any) {
+    @IBAction func btnLoginPressed(_ sender: Any) {
+        
+        guard let email = emailTextField.text, email.isEmpty == true else {
+            ShowMessageManager.shared.showToastGlobal(message: "請輸入帳號(信箱)")
+            return
+        }
+        guard let password = passwordTextField.text, password.isEmpty == true else {
+            ShowMessageManager.shared.showToastGlobal(message: "請輸入密碼")
+            return
+        }
+        login(email: email, password: password)
         
     }
     
-    // MARK: - Navigation
-    
-    // In a storyboard-based application, you will often want to do a little preparation before navigation
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+    private func login(email: String, password: String) {
+        NetworkManager.shared.login(email: email, password: password) { result, statusCode, error in
+            if statusCode == 404 {
+                ShowMessageManager.shared.showToastGlobal(message: "帳號有誤！")
+            } else if statusCode == 401 {
+                ShowMessageManager.shared.showToastGlobal(message: "密碼有誤！")
+            }
+            if let user = result?.user {
+                self.setUserInfo(user: user)
+                self.navigationController?.popViewController(animated: true)
+                NotificationCenter.default.post(name: NSNotification.Name("userDidLogin"), object: nil)
+            }
+        }
+    }
+    // MARK: - Setup login user info
+    private func setUserInfo(user: User) {
         
-        if let registerVC = segue.destination as? RegisterVC {
-            registerVC.registerDelegate = self
+        UserDefaults.standard.set(user.user_id, forKey: userIDKey)
+        userID = UserDefaults.standard.integer(forKey: userIDKey)
+        UserDefaults.standard.set(user.name, forKey: userNameKey)
+        userName = UserDefaults.standard.string(forKey: userNameKey)
+        if user.introduction != "" {
+            UserDefaults.standard.set(user.introduction, forKey: introductionKey)
+        }
+        getUserImage(userID: userID) { imageURL in
+            if let imageURL = imageURL {
+                UserDefaults.standard.set(imageURL, forKey: imageURLKey)
+                self.loginVCDelegate?.didUpdateImageURL(imageURL)
+            }
+        }
+    }
+    
+    private func getUserImage(userID: Int, completion: @escaping (String?) -> Void) {
+        
+        NetworkManager.shared.getImageURLByUserID(userID: userID) { result, statusCode, error in
+            guard let result = result, let imageURL = result.image?.imageURL else{
+                completion(nil)
+                return
+            }
+            return completion(imageURL)
         }
     }
     
     
+    // MARK: End editing
+    override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
+        self.view.endEditing(true)
+    }
+    
+    // MARK: - Navigation
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        if let registerVC = segue.destination as? RegisterVC {
+            registerVC.registerDelegate = self
+        }
+    }
 }
-
+// MARK: - Extension for delegate
 extension LoginVC: RegisterVCDelegate {
     
     func registerSuccess() {

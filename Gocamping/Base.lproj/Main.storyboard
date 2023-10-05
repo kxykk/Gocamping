@@ -1027,7 +1027,7 @@
             <objects>
                 <viewController id="aC4-T2-Nzz" customClass="LoginVC" customModule="Gocamping" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="eyV-Mr-0RQ">
-                        <rect key="frame" x="0.0" y="0.0" width="393" height="852"/>
+                        <rect key="frame" x="0.0" y="0.0" width="393" height="634"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="t1a-tE-v2b">
@@ -1045,7 +1045,6 @@
                                 <state key="normal" title="Button"/>
                                 <buttonConfiguration key="configuration" style="plain" title="註冊帳號"/>
                                 <connections>
-                                    <action selector="registerBtnPressed:" destination="aC4-T2-Nzz" eventType="touchUpInside" id="zDc-EV-JjD"/>
                                     <segue destination="IO6-DC-ws0" kind="show" id="ZLm-Zz-q2Z"/>
                                 </connections>
                             </button>
@@ -1156,7 +1155,7 @@
             <objects>
                 <viewController id="IO6-DC-ws0" customClass="RegisterVC" customModule="Gocamping" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="ZGe-s3-xaV">
-                        <rect key="frame" x="0.0" y="0.0" width="393" height="852"/>
+                        <rect key="frame" x="0.0" y="0.0" width="393" height="634"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <textField opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="248" fixedFrame="YES" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="J4A-0R-xLe">
@@ -1230,13 +1229,13 @@
                                 </connections>
                             </button>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="若完成註冊，即代表您同意Gocamping的" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="WJV-3h-Qq8">
-                                <rect key="frame" x="40" y="670" width="312.66666666666669" height="20.333333333333371"/>
+                                <rect key="frame" x="40" y="452" width="312.66666666666669" height="20.333333333333314"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                 <nil key="textColor"/>
                                 <nil key="highlightedColor"/>
                             </label>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="yL6-iY-GTw">
-                                <rect key="frame" x="25" y="698" width="129" height="35"/>
+                                <rect key="frame" x="25" y="480" width="129" height="35"/>
                                 <state key="normal" title="Button"/>
                                 <buttonConfiguration key="configuration" style="plain" title="Privacy policy"/>
                                 <connections>
@@ -1359,7 +1358,6 @@
                                 <state key="normal" title="Button"/>
                                 <buttonConfiguration key="configuration" style="plain" title="Button"/>
                                 <connections>
-                                    <action selector="createArticleBtnPressed:" destination="pg4-CK-YIc" eventType="touchUpInside" id="Sqf-hs-A3y"/>
                                     <segue destination="SQd-vM-sST" kind="push" id="62W-bv-ymk"/>
                                 </connections>
                             </button>
@@ -1657,7 +1655,7 @@
     </scenes>
     <inferredMetricsTieBreakers>
         <segue reference="4Ou-RS-luU"/>
-        <segue reference="qR7-yk-LWp"/>
+        <segue reference="xqW-iS-8YU"/>
         <segue reference="XEI-61-69J"/>
         <segue reference="Ujm-AX-HEJ"/>
     </inferredMetricsTieBreakers>

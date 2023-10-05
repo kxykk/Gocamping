@@ -19,10 +19,14 @@ class EditProfileVC: UIViewController {
     @IBOutlet weak var introLabel: UILabel!
     @IBOutlet weak var introTextView: UITextView!
     @IBOutlet weak var profileImageView: UIImageView!
-    
+    // MARK: - Lifecycle
     override func viewDidLoad() {
         super.viewDidLoad()
-
+        initialSetup()
+    }
+    
+    // MARK: - Initial setup
+    private func initialSetup() {
         let attributedString = NSMutableAttributedString(string: "自我介紹:")
         introLabel.attributedText = attributedString
         
@@ -30,31 +34,50 @@ class EditProfileVC: UIViewController {
         introTextView.layer.borderColor = UIColor.gray.cgColor
         introTextView.layer.cornerRadius = 5.0
         
-        if let imageURL = UserDefaults.standard.string(forKey: imageURLKey) {
-            if let originalImage = CacheManager.shared.load(filename: imageURL),
+        setUserImage()
+        setUserIntroduction()
+    }
+    
+    private func setUserImage() {
+        if let imageURL = UserDefaults.standard.string(forKey: imageURLKey),
+            let originalImage = CacheManager.shared.load(filename: imageURL),
+            let image = UIImage.thumbnail(from: originalImage) {
+            profileImageView.image = image
+        } else {
+            if let originalImage = UIImage(named: "userDefault"),
                let image = UIImage.thumbnail(from: originalImage) {
                 profileImageView.image = image
-            } else {
-                if let originalImage = UIImage(named: "userDefault"),
-                   let image = UIImage.thumbnail(from: originalImage) {
-                    profileImageView.image = image
-                }
             }
-        } 
-        
+        }
+    }
+    
+    private func setUserIntroduction() {
         if let introduction = UserDefaults.standard.string(forKey: introductionKey) {
             introTextView.text = introduction
         } else {
             introTextView.text = "請輸入自我介紹..."
         }
-        
     }
     
-    override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
-        self.view.endEditing(true)
-    }
-    
+
+    // MARK: - Button actions
     @IBAction func imagePickerBtnPressed(_ sender: Any) {
+        showAlert()
+    }
+    
+    @IBAction func confirmBtnPressed(_ sender: Any) {
+        
+        guard let introduction = introTextView.text else {
+            return
+        }
+        updateUserIntroduction(introduction: introduction)
+        delegate?.didUpdateIntroduction(introduction)
+        NotificationCenter.default.post(name: NSNotification.Name("userProfileDidUpdate"), object: nil)
+        self.navigationController?.popViewController(animated: true)
+    }
+    
+    // MARK: - Pick image alert
+    private func showAlert() {
         
         let alert = UIAlertController(title: "Image Source?", message: nil, preferredStyle: .alert)
 //        let camera = UIAlertAction(title: "相機", style: .default) { action in
@@ -71,33 +94,27 @@ class EditProfileVC: UIViewController {
         present(alert, animated: true)
     }
     
-    @IBAction func confirmBtnPressed(_ sender: Any) {
+    // MARK: - Update user introduction
+    private func updateUserIntroduction(introduction: String) {
         let userID = UserDefaults.standard.integer(forKey: userIDKey)
-        guard let introduction = introTextView.text else {
-            return
-        }
+        
         NetworkManager.shared.putUserIntroduction(userID: userID, introduction: introduction) { result, statusCode, error in
             if let error = error {
-                assertionFailure("Put introduction error: \(error)")
+                ShowMessageManager.shared.showToastGlobal(message: "更改自我介紹失敗！")
                 return
             }
             UserDefaults.standard.set(introduction, forKey: introductionKey)
         }
-        delegate?.didUpdateIntroduction(introduction)
-        NotificationCenter.default.post(name: NSNotification.Name("userProfileDidUpdate"), object: nil)
-        self.navigationController?.popViewController(animated: true)
     }
-    /*
-    // MARK: - Navigation
-
-    // In a storyboard-based application, you will often want to do a little preparation before navigation
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        // Get the new view controller using segue.destination.
-        // Pass the selected object to the new view controller.
+    
+    // MARK: - End editing
+    override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
+        self.view.endEditing(true)
     }
-    */
-
+    
 }
+
+// MARK: - UIImagePickerControllerDelegate, UINavigationControllerDelegate
 extension EditProfileVC: UIImagePickerControllerDelegate, UINavigationControllerDelegate {
     
     func launchPicker(source: UIImagePickerController.SourceType) {
@@ -121,33 +138,18 @@ extension EditProfileVC: UIImagePickerControllerDelegate, UINavigationController
         if type == UTType.image.identifier {
             guard let originalImage = info[.originalImage] as? UIImage,
                   let image = originalImage.resize(maxEdge: 1024) else {
-                assertionFailure("Invalid UIImage")
+                ShowMessageManager.shared.showToastGlobal(message: "Invalid UIImage")
                 return
             }
-            guard let jpgData = image.jpegData(compressionQuality: 0.6) else {
-                assertionFailure("Invalid UIImage")
+            guard let imageData = image.jpegData(compressionQuality: 0.6) else {
+                ShowMessageManager.shared.showToastGlobal(message: "Invalid UIImage")
                 return
             }
-            if let originalImage = UIImage(data: jpgData),
+            if let originalImage = UIImage(data: imageData),
                let image = UIImage.thumbnail(from: originalImage) {
                 profileImageView.image = image
+                uploadUserImage(imageData: imageData)
             }
-            
-            let userID = UserDefaults.standard.integer(forKey: userIDKey)
-            let imageSortNumber = 0
-            let imageType = "user"
-            
-            NetworkManager.shared.uploadImage(articleID: nil, userID: userID, campID: nil, imageSortNumber: imageSortNumber, imageType: imageType, imageData: jpgData) { result, statusCode, error in
-                if let error = error {
-                    assertionFailure("Upload Image error: \(error)")
-                    return
-                }
-                if let imageURL = result?.image?.imageURL {
-                    UserDefaults.standard.set(imageURL, forKey: imageURLKey)
-                    try? CacheManager.shared.save(data: jpgData, filename: imageURL)
-                }
-            }
-            
         } else if type == UTType.movie.identifier {
             guard let url = info[.mediaURL] as? URL else {
                 return
@@ -156,4 +158,23 @@ extension EditProfileVC: UIImagePickerControllerDelegate, UINavigationController
         }
         picker.dismiss(animated: true, completion: nil)
     }
+    
+    // MARK: - UPload user image
+    private func uploadUserImage(imageData: Data) {
+        let userID = UserDefaults.standard.integer(forKey: userIDKey)
+        let imageSortNumber = 0
+        let imageType = "user"
+        
+        NetworkManager.shared.uploadImage(articleID: nil, userID: userID, campID: nil, imageSortNumber: imageSortNumber, imageType: imageType, imageData: imageData) { result, statusCode, error in
+            if let error = error {
+                ShowMessageManager.shared.showToastGlobal(message: "更新照片失敗！")
+                return
+            }
+            if let imageURL = result?.image?.imageURL {
+                UserDefaults.standard.set(imageURL, forKey: imageURLKey)
+                try? CacheManager.shared.save(data: imageData, filename: imageURL)
+            }
+        }
+    }
+    
 }

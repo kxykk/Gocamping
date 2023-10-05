@@ -50,13 +50,13 @@ class NetworkManager {
     let keywordKey = "keyword"
     let campNameKey = "camp_name"
 
-#if DEBUG
-    static var baseURL: String = "http://localhost:8000"
-    var saveImageURL = "/Desktop/kang/Gocamping_Testapi/pictures/"
-#else
+//#if DEBUG
+//    static var baseURL: String = "http://localhost:8000"
+//    var saveImageURL = "/Desktop/kang/Gocamping_Testapi/pictures/"
+//#else
     static var baseURL: String = "http://139.162.98.222:8000"
-    var saveImageURL = "/root/Gocamping_api/pictures/"
-#endif
+    var saveImageURL = "/root/Gocamping/Gocamping_api/pictures/"
+//#endif
     
     var userURL = baseURL + "/user/"
     var searchUserURL = baseURL + "/user/search/"
@@ -285,6 +285,7 @@ class NetworkManager {
     
     //MARK: Download
     func downloadImage(imageURL: String, completion: @escaping DownloadHandler) {
+        
         let fileURL = NetworkManager.baseURL + saveImageURL + imageURL
         session.request(fileURL).responseData { response in
             switch response.result {
@@ -293,6 +294,23 @@ class NetworkManager {
             case .failure(let error):
                 completion(nil, error)
             }
+        }
+    }
+    
+    func downloadOrLoadImage(imageURL: String, completion: @escaping DownloadHandler) {
+        if let cacheImage = CacheManager.shared.load(filename: imageURL) {
+            if let data = cacheImage.jpegData(compressionQuality: 1.0) {
+                completion(data, nil)
+                return
+            }
+        }
+        self.downloadImage(imageURL: imageURL) { data, error in
+            if let data = data {
+                try? CacheManager.shared.save(data: data, filename: imageURL)
+                completion(data, nil)
+                return
+            }
+            completion(nil, error)
         }
     }
     

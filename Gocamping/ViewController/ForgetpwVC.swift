@@ -12,26 +12,13 @@ class ForgetpasswordVC: UIViewController, MFMailComposeViewControllerDelegate {
 
     @IBOutlet weak var accountTextField: UITextField!
     
+    // MARK: - Lifecycle
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        // Do any additional setup after loading the view.
-    }
-    
-    override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
-        self.view.endEditing(true)
     }
 
-    /*
-    // MARK: - Navigation
-
-    // In a storyboard-based application, you will often want to do a little preparation before navigation
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        // Get the new view controller using segue.destination.
-        // Pass the selected object to the new view controller.
-    }
-    */
-
+    // MARK: - Button actions
     @IBAction func sendEmailBtnPressed(_ sender: Any) {
             guard let email = accountTextField.text, email != "" else {
                 ShowMessageManager.shared.showToastGlobal( message: "請輸入正確的帳號(信箱)")
@@ -49,7 +36,8 @@ class ForgetpasswordVC: UIViewController, MFMailComposeViewControllerDelegate {
                 }
             }
         }
-    func sendEmail(to email: String, password: String) {
+    // MARK: - Send mail
+    private func sendEmail(to email: String, password: String) {
             if MFMailComposeViewController.canSendMail() {
                 let mail = MFMailComposeViewController()
                 mail.mailComposeDelegate = self
@@ -59,7 +47,6 @@ class ForgetpasswordVC: UIViewController, MFMailComposeViewControllerDelegate {
 
                 present(mail, animated: true)
             } else {
-                // 顯示錯誤訊息
                 ShowMessageManager.shared.showToastGlobal(message: "無法發送電子郵件")
             }
         }
@@ -67,5 +54,10 @@ class ForgetpasswordVC: UIViewController, MFMailComposeViewControllerDelegate {
         func mailComposeController(_ controller: MFMailComposeViewController, didFinishWith result: MFMailComposeResult, error: Error?) {
             controller.dismiss(animated: true)
         }
+    
+    //MARK: - End editing
+    override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
+        self.view.endEditing(true)
+    }
     
 }
