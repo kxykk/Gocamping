@@ -7,21 +7,6 @@
 
 import Foundation
 
-let userIDKey = "userID"
-let userNameKey = "userName"
-let introductionKey = "introduction"
-let imageURLKey = "imageURL"
-var userID = UserDefaults.standard.integer(forKey: userIDKey )
-var userName = UserDefaults.standard.string(forKey: userNameKey)
-var introduction = UserDefaults.standard.string(forKey: introductionKey)
-var imageURL = UserDefaults.standard.string(forKey: imageURLKey)
-
-class UserManager {
-    static let shared = UserManager()
-    
-    var userByArticle = [User]()
-}
-
 struct User: Decodable {
     let email: String
     let name: String

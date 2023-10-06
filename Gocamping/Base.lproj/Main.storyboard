@@ -280,7 +280,7 @@
                                         <inset key="separatorInset" minX="15" minY="0.0" maxX="15" maxY="0.0"/>
                                         <connections>
                                             <outlet property="userImage" destination="1PD-Aq-XOJ" id="Wo7-gV-oL5"/>
-                                            <outlet property="userName" destination="089-Yv-TtJ" id="uzy-7Y-ape"/>
+                                            <outlet property="usernameLabel" destination="089-Yv-TtJ" id="uzy-7Y-ape"/>
                                             <segue destination="pg4-CK-YIc" kind="push" identifier="showUserSegue" id="4Ou-RS-luU"/>
                                         </connections>
                                     </tableViewCell>

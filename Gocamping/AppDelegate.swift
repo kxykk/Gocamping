@@ -13,8 +13,6 @@ import FirebaseDatabase
 @main
 class AppDelegate: UIResponder, UIApplicationDelegate {
 
-//123
-
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         // Override point for customization after application launch.
         //GMSServices.provideAPIKey("AIzaSyDVJHn2Xi5nhzoeXtq3dGi4FSsFMyU-RE0")
@@ -36,6 +34,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 //                ServeoManager.shared.serveoGroup.leave()
 //            }
 //        }
+        CacheManager.shared.purge()
+
         return true
     }
 
