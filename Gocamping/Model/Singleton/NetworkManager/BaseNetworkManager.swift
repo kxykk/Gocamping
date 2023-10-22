@@ -15,13 +15,13 @@ class BaseNetworkManager {
     
     var session: Session
     
-    //#if DEBUG
-    //    static var baseURL: String = "http://localhost:8000"
-    //    var saveImageURL = "/Desktop/kang/Gocamping_Testapi/pictures/"
-    //#else
+//    #if DEBUG
+//        static var baseURL: String = "http://localhost:8000"
+//        var saveImageURL = "/Desktop/kang/Gocamping_Testapi/pictures/"
+//    #else
         static var baseURL: String = "http://139.162.98.222:8000"
         var saveImageURL = "/root/Gocamping/Gocamping_api/pictures/"
-    //#endif
+//    #endif
     
     init() {
         let retrier = CustomsRetrier()

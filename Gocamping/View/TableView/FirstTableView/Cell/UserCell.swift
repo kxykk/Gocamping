@@ -23,5 +23,8 @@ class UserCell: UITableViewCell {
         usernameLabel?.font = UIFont.boldSystemFont(ofSize: 20)
     }
     
+    override func prepareForReuse() {
+        userImage.image = nil
+    }
 }
 

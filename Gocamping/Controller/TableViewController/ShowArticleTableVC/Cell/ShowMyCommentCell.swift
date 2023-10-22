@@ -24,6 +24,7 @@ class ShowMyCommentCell: UITableViewCell {
         super.awakeFromNib()
         setupShowMyCommentTextView()
         setupGesture()
+
     }
     
     // MARK: - UI setup
@@ -32,6 +33,9 @@ class ShowMyCommentCell: UITableViewCell {
         showMyCommentTextView.text = placeholderText
         showMyCommentTextView.textColor = UIColor.gray
         showMyCommentTextView.delegate = self
+        showMyCommentTextView.layer.cornerRadius = 10
+        showMyCommentTextView.clipsToBounds = true
+        showMyCommentTextView.shadow()
     }
     
     // MARK: - Gesture setup

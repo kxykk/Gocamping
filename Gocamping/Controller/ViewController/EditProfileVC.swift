@@ -141,14 +141,17 @@ extension EditProfileVC: UIImagePickerControllerDelegate, UINavigationController
                 ShowMessageManager.shared.showToastGlobal(message: "Invalid UIImage")
                 return
             }
+            print(":::\(originalImage)")
+            print("::::\(image)")
             guard let imageData = image.jpegData(compressionQuality: 0.6) else {
                 ShowMessageManager.shared.showToastGlobal(message: "Invalid UIImage")
                 return
             }
+            print(":::::\(imageData)")
+            uploadUserImage(imageData: imageData)
             if let originalImage = UIImage(data: imageData),
                let image = UIImage.thumbnail(from: originalImage) {
                 profileImageView.image = image
-                uploadUserImage(imageData: imageData)
             }
         } else if type == UTType.movie.identifier {
             guard let url = info[.mediaURL] as? URL else {
@@ -162,6 +165,7 @@ extension EditProfileVC: UIImagePickerControllerDelegate, UINavigationController
     // MARK: - UPload user image
     private func uploadUserImage(imageData: Data) {
         let userID = UserDefaults.standard.integer(forKey: userIDKey)
+        print("userID\(userID)")
         let imageSortNumber = 0
         let imageType = "user"
         
@@ -173,6 +177,7 @@ extension EditProfileVC: UIImagePickerControllerDelegate, UINavigationController
             if let imageURL = result?.image?.imageURL {
                 UserDefaults.standard.set(imageURL, forKey: imageURLKey)
                 try? CacheManager.shared.save(data: imageData, filename: imageURL)
+                print(":::::\(imageURL)")
             }
         }
     }

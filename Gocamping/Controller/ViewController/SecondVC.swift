@@ -13,7 +13,6 @@ class SecondViewController: UIViewController {
     @IBOutlet weak var SecondTableView: SecondTableView!
     
     var noResultsLabel: UILabel!
-    var activityIndicator: UIActivityIndicatorView!
     let tableViewContainer = UIView()
     
     // MARK: - Lifecycle
@@ -23,8 +22,8 @@ class SecondViewController: UIViewController {
         setupTableViewContainer()
         setupTableView()
         setupNoResultsLabel()
-        setupActivityIndicator()
         fetchCampsData()
+        self.view.backgroundColor = UIColor.peachCream
     }
     
     private func setupSearchBar() {
@@ -51,7 +50,7 @@ class SecondViewController: UIViewController {
     
     private func setupNoResultsLabel() {
         noResultsLabel = UILabel(frame: CGRect(x: 0, y: 0, width: SecondTableView.bounds.width, height: 50))
-        noResultsLabel.text = "搜尋不到露營地"
+        noResultsLabel.text = "無搜尋結果"
         noResultsLabel.textAlignment = .center
         noResultsLabel.textColor = .gray
         noResultsLabel.isHidden = true
@@ -59,16 +58,11 @@ class SecondViewController: UIViewController {
         self.view.bringSubviewToFront(noResultsLabel)
     }
     
-    private func setupActivityIndicator() {
-        activityIndicator = UIActivityIndicatorView(style: .large)
-        activityIndicator.center = self.view.center
-        activityIndicator.hidesWhenStopped = true
-        self.view.addSubview(activityIndicator)
-    }
+
     
     // MARK: - Get camps
     private func fetchCampsData() {
-        activityIndicator.startAnimating()
+        self.mbProgressHUD(text: "載入中...")
         CampNetworkManager.shared.getCamps { result, statusCode, error in
             if let error = error {
                 assertionFailure("Get camps error: \(error)")
@@ -77,8 +71,8 @@ class SecondViewController: UIViewController {
             if let camps = result?.camps {
                 CampManager.shared.camps = camps
                 DispatchQueue.main.async {
+                    self.hideProgressedHUD()
                     self.SecondTableView.reloadData()
-                    self.activityIndicator.stopAnimating()
                 }
             }
         }
@@ -95,7 +89,7 @@ extension SecondViewController: UISearchBarDelegate {
     
     func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
         
-        activityIndicator.startAnimating()
+        self.mbProgressHUD(text: "搜尋中...")
         SecondTableView.isHidden = true
         let minimumShowTime = DispatchTime.now() + 0.5
         
@@ -107,7 +101,7 @@ extension SecondViewController: UISearchBarDelegate {
             if let camps = result?.camps {
                 CampManager.shared.camps = camps
                 DispatchQueue.main.asyncAfter(deadline: minimumShowTime) {
-                    self.activityIndicator.stopAnimating()
+                    self.hideProgressedHUD()
                     self.SecondTableView.isHidden = false
                     self.noResultsLabel.isHidden = true
                     self.SecondTableView.tableFooterView = nil
@@ -117,7 +111,7 @@ extension SecondViewController: UISearchBarDelegate {
             if statusCode == 404 {
                 DispatchQueue.main.asyncAfter(deadline: minimumShowTime) {
                     CampManager.shared.camps = []
-                    self.activityIndicator.stopAnimating()
+                    self.hideProgressedHUD()
                     self.SecondTableView.isHidden = false
                     self.noResultsLabel.isHidden = false
                     self.SecondTableView.tableFooterView = self.noResultsLabel
@@ -127,3 +121,4 @@ extension SecondViewController: UISearchBarDelegate {
         }
     }
 }
+

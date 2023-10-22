@@ -20,6 +20,12 @@ class ShowCommentCell: UITableViewCell {
         
     }
     
+    private func setupcommentTextView() {
+        commentTextView.layer.cornerRadius = 10
+        commentTextView.clipsToBounds = true
+        commentTextView.shadow()
+    }
+    
     // MARK: - Cell reuse
     override func prepareForReuse() {
         editCommentBtnPressed.isHidden = true

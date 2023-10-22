@@ -98,14 +98,18 @@ extension FirstTableView {
     
     // MARK: - Data for userCell
     private func configureUserCell(at indexPath: IndexPath, for tableView: UITableView) -> UITableViewCell {
-        
+            
         let cell = tableView.dequeueReusableCell(withIdentifier: "userCell", for: indexPath) as! UserCell
-        let userIndex = indexPath.row / 2
-        if userIndex < UserManager.shared.userByArticle.count {
-            let user = UserManager.shared.userByArticle[userIndex]
+        
+        let articleIndex = indexPath.row / 2
+        let article = ArticleManager.shared.allArticle[articleIndex]
+        let articleID = article.article_id
+        
+        if let user = UserManager.shared.userObjectByArticleID[articleID] {
             populateUserData(to: cell, with: user)
             return cell
         }
+        
         return UITableViewCell()
     }
 

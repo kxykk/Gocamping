@@ -21,6 +21,7 @@ class ImageNetworkManager: BaseNetworkManager {
     let mimeType = "image/jpeg"
     let articleIDKey = "article_id"
     let campIDKey = "camp_id"
+    let userIDKey = "user_id"
     let campNameKey = "camp_name"
 
 

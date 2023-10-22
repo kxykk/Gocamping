@@ -19,6 +19,8 @@ var imageURL = UserDefaults.standard.string(forKey: imageURLKey)
 
 class UserManager {
     static let shared = UserManager()
+    var userObjectByArticleID: [Int: User] = [:]
+    var userIDByArticleID: [Int: Int] = [:]
     
     var userByArticle = [User]()
 }

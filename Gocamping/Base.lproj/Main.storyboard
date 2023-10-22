@@ -1027,7 +1027,7 @@
             <objects>
                 <viewController id="aC4-T2-Nzz" customClass="LoginVC" customModule="Gocamping" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="eyV-Mr-0RQ">
-                        <rect key="frame" x="0.0" y="0.0" width="393" height="634"/>
+                        <rect key="frame" x="0.0" y="0.0" width="393" height="852"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="t1a-tE-v2b">
@@ -1155,7 +1155,7 @@
             <objects>
                 <viewController id="IO6-DC-ws0" customClass="RegisterVC" customModule="Gocamping" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="ZGe-s3-xaV">
-                        <rect key="frame" x="0.0" y="0.0" width="393" height="634"/>
+                        <rect key="frame" x="0.0" y="0.0" width="393" height="852"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <textField opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="248" fixedFrame="YES" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="J4A-0R-xLe">
@@ -1229,13 +1229,13 @@
                                 </connections>
                             </button>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="若完成註冊，即代表您同意Gocamping的" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="WJV-3h-Qq8">
-                                <rect key="frame" x="40" y="452" width="312.66666666666669" height="20.333333333333314"/>
+                                <rect key="frame" x="40" y="670" width="312.66666666666669" height="20.333333333333371"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                 <nil key="textColor"/>
                                 <nil key="highlightedColor"/>
                             </label>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="yL6-iY-GTw">
-                                <rect key="frame" x="25" y="480" width="129" height="35"/>
+                                <rect key="frame" x="25" y="698" width="129" height="35"/>
                                 <state key="normal" title="Button"/>
                                 <buttonConfiguration key="configuration" style="plain" title="Privacy policy"/>
                                 <connections>
@@ -1583,7 +1583,7 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="vPP-6Z-LfK">
-                                <rect key="frame" x="125" y="211" width="93.333333333333314" height="35"/>
+                                <rect key="frame" x="125" y="211" width="143" height="35"/>
                                 <state key="normal" title="Button"/>
                                 <buttonConfiguration key="configuration" style="plain" title="選擇照片"/>
                                 <connections>
@@ -1591,14 +1591,14 @@
                                 </connections>
                             </button>
                             <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" text="請輸入自我介紹..." textAlignment="natural" translatesAutoresizingMaskIntoConstraints="NO" id="H2o-Y4-Nwu">
-                                <rect key="frame" x="58.666666666666671" y="305" width="219.66666666666663" height="336"/>
+                                <rect key="frame" x="58.666666666666657" y="305" width="269.33333333333337" height="336"/>
                                 <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                                 <color key="textColor" systemColor="labelColor"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="16"/>
                                 <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
                             </textView>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="vcx-Ra-Lvj">
-                                <rect key="frame" x="142.33333333333334" y="734" width="58.666666666666657" height="35"/>
+                                <rect key="frame" x="167.33333333333334" y="734" width="58.666666666666657" height="35"/>
                                 <state key="normal" title="Button"/>
                                 <buttonConfiguration key="configuration" style="gray" title="確認"/>
                                 <connections>
@@ -1655,7 +1655,7 @@
     </scenes>
     <inferredMetricsTieBreakers>
         <segue reference="4Ou-RS-luU"/>
-        <segue reference="xqW-iS-8YU"/>
+        <segue reference="qR7-yk-LWp"/>
         <segue reference="XEI-61-69J"/>
         <segue reference="Ujm-AX-HEJ"/>
     </inferredMetricsTieBreakers>

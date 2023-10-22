@@ -14,7 +14,6 @@ class FirstViewController: UIViewController {
     @IBOutlet weak var searchArticlesBar: UISearchBar!
     @IBOutlet weak var firstTableView: FirstTableView!
     var noResultsLabel: UILabel!
-    var activityIndicator: UIActivityIndicatorView!
     let tableViewContainer = UIView()
     var lastSearchKeyword: String?
     var lastSearchResults: [Articles]?
@@ -31,7 +30,10 @@ class FirstViewController: UIViewController {
     }
     
     override func viewWillAppear(_ animated: Bool) {
-        fetchInitialArticlesIfNeeded()
+        super.viewWillAppear(animated)
+        self.mbProgressHUD(text: "載入中...")
+        self.firstTableView.isHidden = true
+        self.getAllArticle()
     }
 
     // MARK: - Initial Setup
@@ -40,7 +42,6 @@ class FirstViewController: UIViewController {
         setupTableViewContainer()
         setupTableView()
         setupNoResultsLabel()
-        setupActivityIndicator()
         setupViewControllerBackground()
     }
     
@@ -71,15 +72,9 @@ class FirstViewController: UIViewController {
     }
     
     private func setupNoResultsLabel() {
-        noResultsLabel = firstTableView.addNoResultsLabel(withText: "搜尋不到文章")
+        noResultsLabel = firstTableView.addNoResultsLabel(withText: "無搜尋結果")
     }
-    
-    private func setupActivityIndicator() {
-        activityIndicator = UIActivityIndicatorView(style: .large)
-        activityIndicator.center = self.view.center
-        activityIndicator.hidesWhenStopped = true
-        self.view.addSubview(activityIndicator)
-    }
+
     
     // MARK: - Button actions
     @objc func userDidLogout() {
@@ -98,19 +93,16 @@ class FirstViewController: UIViewController {
     }
     
     private func getAllArticle() {
-            let group = DispatchGroup()
-            activityIndicator.startAnimating()
-            self.firstTableView.isHidden = true
-            
-            group.enter()
-            fetchArticles(group: group)
-            
-            group.notify(queue: .main) {
-                self.activityIndicator.stopAnimating()
-                self.firstTableView.reloadData()
-                self.firstTableView.isHidden = false
-            }
+        let group = DispatchGroup()
+        group.enter()
+        fetchArticles(group: group)
+        
+        group.notify(queue: .main) {
+            self.hideProgressedHUD()
+            self.firstTableView.reloadData()
+            self.firstTableView.isHidden = false
         }
+    }
     
     private func fetchArticles(group: DispatchGroup) {
         ArticleNetworkManager.shared.getAllArticleIDandTitle { result, statusCode, error in
@@ -128,8 +120,9 @@ class FirstViewController: UIViewController {
     // MARK: - Get user infos
     private func fetchUsersByArticleID(article: Articles, group: DispatchGroup) {
         UserNetworkManager.shared.getUserByArticleID(articleID: article.article_id) { result, statusCode, error in
-            if let users = result?.user {
-                UserManager.shared.userByArticle.append(users)
+            if let user = result?.user {
+                UserManager.shared.userObjectByArticleID[article.article_id] = user
+                UserManager.shared.userIDByArticleID[article.article_id] = user.user_id
             }
             group.leave()
         }
@@ -159,22 +152,29 @@ class FirstViewController: UIViewController {
 
     // MARK: - Navigation
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        
-        if segue.identifier == "showArticleSegue",
-           let showArticleTableVC = segue.destination as? ShowArticleTableVC,
-           let indexPath = self.firstTableView.indexPathForSelectedRow {
-            showArticleTableVC.articleID = ArticleManager.shared.allArticle[indexPath.row / 2].article_id
-            showArticleTableVC.userID = UserManager.shared.userByArticle[indexPath.row / 2].user_id
-        }
-        
-        else if segue.identifier == "showUserSegue",
-                  let thirdVC = segue.destination as? ThirdViewController,
-                  let indexPath = self.firstTableView.indexPathForSelectedRow {
-            thirdVC.userID = UserManager.shared.userByArticle[indexPath.row / 2].user_id
-            thirdVC.isFromFirstVC = true
+        if let indexPath = self.firstTableView.indexPathForSelectedRow {
+            let articleIndex = indexPath.row / 2
+            let articleID = ArticleManager.shared.allArticle[articleIndex].article_id
+            
+            if segue.identifier == "showArticleSegue",
+               let showArticleTableVC = segue.destination as? ShowArticleTableVC {
+                showArticleTableVC.articleID = articleID
+                
+                if let userID = UserManager.shared.userIDByArticleID[articleID] {
+                    showArticleTableVC.userID = userID
+                }
+            }
+            
+            else if segue.identifier == "showUserSegue",
+                    let thirdVC = segue.destination as? ThirdViewController {
+                if let userID = UserManager.shared.userIDByArticleID[articleID] {
+                    thirdVC.userID = userID
+                    thirdVC.isFromFirstVC = true
+                }
+            }
         }
     }
-    
+
     // MARK: - End editing
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
         self.view.endEditing(true)
@@ -210,7 +210,7 @@ extension FirstViewController: UISearchBarDelegate {
     
     // MARK: - Helper Methods
     private func prepareForSearch() {
-        activityIndicator.startAnimating()
+        mbProgressHUD(text: "搜尋中...")
         firstTableView.isHidden = true
     }
     
@@ -238,7 +238,7 @@ extension FirstViewController: UISearchBarDelegate {
     
     private func finalizeSearch(minimumShowTime: DispatchTime) {
         DispatchQueue.main.asyncAfter(deadline: minimumShowTime) {
-            self.activityIndicator.stopAnimating()
+            self.hideProgressedHUD()
             self.firstTableView.isHidden = false
             self.noResultsLabel.isHidden = true
             self.firstTableView.tableFooterView = nil
@@ -253,7 +253,7 @@ extension FirstViewController: UISearchBarDelegate {
             self.lastSearchKeyword = nil
             self.lastSearchResults = nil
             UserManager.shared.userByArticle.removeAll()
-            self.activityIndicator.stopAnimating()
+            self.hideProgressedHUD()
             self.firstTableView.isHidden = false
             self.noResultsLabel.isHidden = false
             self.firstTableView.tableFooterView = self.noResultsLabel
