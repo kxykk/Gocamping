@@ -50,37 +50,7 @@ class ThirdViewController: UIViewController {
         setupChildViewControllers()
         setupDelegate()
         fetchUserDataIfNeeded()
-    }
-    
-    // MARK: - Update User State
-    private func updateState() {
-        setupUser()
         registerNotifications()
-        updateUI()
-        getCollectedArticle()
-        getMyArticle()
-        updateUIBaseOnLoginStates()
-    }
-    
-    private func setupUser() {
-        
-        if !isFromFirstVC {
-            userID = UserDefaults.standard.integer(forKey: userIDKey)
-            userName.text = UserDefaults.standard.string(forKey: userNameKey)
-        }
-    }
-    
-    private func setupDelegate() {
-        if let tabBarController = self.tabBarController,
-           let viewControllers = tabBarController.viewControllers {
-            
-            for viewController in viewControllers {
-                if let fifthVC = viewController as? FifthViewController {
-                    fifthVC.fifthVCDelegate = self
-                    break
-                }
-            }
-        }
     }
     
     // MARK: - Setup UI
@@ -112,8 +82,95 @@ class ThirdViewController: UIViewController {
         createArticleBtnPressed.imageView?.contentMode = .scaleAspectFit
     }
     
+    // MARK: - Setup childViewController
+    private func setupChildViewControllers() {
+        for child in children {
+            if let childVC = child as? MyArticleTableVC {
+                myArticleTableVC = childVC
+            }
+            if let childVC = child as? MyCollectionTableVC {
+                myCollectionTableVC = childVC
+            }
+        }
+    }
+    // MARK: - Setup delegate
+    private func setupDelegate() {
+        if let tabBarController = self.tabBarController,
+           let viewControllers = tabBarController.viewControllers {
+            
+            for viewController in viewControllers {
+                if let fifthVC = viewController as? FifthViewController {
+                    fifthVC.fifthVCDelegate = self
+                    break
+                }
+            }
+        }
+    }
+    
+    // MARK: - Fetch user data
+    private func fetchUserDataIfNeeded() {
+        if isFromFirstVC {
+            let group = DispatchGroup()
+            getUserInfo(group: group)
+            getUserImage(group: group)
+            group.notify(queue: .main) {
+                self.updateUIForFirstVC()
+            }
+        }
+    }
+    
+    private func getUserInfo(group: DispatchGroup) {
+        group.enter()
+        UserNetworkManager.shared.getUser(userID: userID) { result, statusCode, error in
+            if let user = result?.user {
+                self.otherUserIntroduction = user.introduction ?? "無簡介"
+                self.otherUserName = user.name
+            }
+            group.leave()
+        }
+    }
+    
+    private func getUserImage(group: DispatchGroup) {
+        group.enter()
+        ImageNetworkManager.shared.getImageURLByUserID(userID: userID) { result, statusCode, error in
+            guard let result = result, let imageURL = result.image?.imageURL else {
+                self.otherUserImage = UIImage(named: "userDefault")
+                return
+            }
+            ImageNetworkManager.shared.downloadOrLoadImage(imageURL: imageURL) { data, error in
+                if let data = data {
+                    self.otherUserImage = UIImage(data: data)
+                }
+                group.leave()
+            }
+        }
+    }
+    
+    // MARK: - Notification
+    private func registerNotifications() {
+        NotificationCenter.default.addObserver(self, selector: #selector(loginSuccess), name: NSNotification.Name("userDidLogin"), object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(postContentSuccess), name: NSNotification.Name("postContentSuccess"), object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(editContentSuccess), name: NSNotification.Name("editContentSuccess"), object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(userProfileDidUpdate), name: NSNotification.Name("userProfileDidUpdate"), object: nil)
+    }
+    
+    // MARK: - Update User State
+    private func updateState() {
+        setupUser()
+        updateUI()
+        getCollectedArticle()
+        getMyArticle()
+        updateUIBaseOnLoginStates()
+    }
+    
+    private func setupUser() {
+        if !isFromFirstVC {
+            userID = UserDefaults.standard.integer(forKey: userIDKey)
+            userName.text = UserDefaults.standard.string(forKey: userNameKey)
+        }
+    }
+    
     private func updateUI() {
-        
         if isFromFirstVC {
             updateUIForFirstVC()
         } else {
@@ -130,6 +187,39 @@ class ThirdViewController: UIViewController {
                 if let originalImage = UIImage(named: "userDefault"),
                    let image = UIImage.thumbnail(from: originalImage) {
                     userImage?.image = image
+                }
+            }
+        }
+    }
+    
+    // MARK: - Get article lists
+    func getCollectedArticle() {
+        if userID != 0 {
+            ArticleNetworkManager.shared.getCollectedArticle(userID: userID) { result, statusCode, error in
+                if let articles = result?.articles {
+                    disableTrace()
+                    ArticleManager.shared.myCollectedArticle = articles
+                    DispatchQueue.main.async {
+                        self.myCollectionTableVC?.tableView.reloadData()
+                    }
+                }
+            }
+        }
+    }
+    
+    private func getMyArticle() {
+        if userID != 0 {
+            ArticleNetworkManager.shared.getMyArticle(userID: userID) { result, statusCode, error in
+                if let articles = result?.articles {
+                    disableTrace()
+                    ArticleManager.shared.myArticle = articles
+                    
+                    let articleCount = ArticleManager.shared.myArticle.count
+                    let content = "有\(articleCount)篇文章"
+                    self.howManyArticle.text = content
+                    DispatchQueue.main.async {
+                        self.myArticleTableVC?.tableView.reloadData()
+                    }
                 }
             }
         }
@@ -154,6 +244,7 @@ class ThirdViewController: UIViewController {
         userIntroduction.text = otherUserIntroduction
         createArticleBtnPressed.isHidden = true
         editBtnPressed.isHidden = true
+        disableTrace()
         
         if let unwrappedImage = otherUserImage {
             let image = UIImage.thumbnail(from: unwrappedImage)
@@ -211,98 +302,6 @@ class ThirdViewController: UIViewController {
         }
     }
     
-    // MARK: - Fetch user data
-    private func fetchUserDataIfNeeded() {
-        if isFromFirstVC {
-            let group = DispatchGroup()
-            getUserInfo(group: group)
-            getUserImage(group: group)
-            group.notify(queue: .main) {
-                self.updateUIForFirstVC()
-            }
-        }
-    }
-    
-    private func getUserInfo(group: DispatchGroup) {
-        group.enter()
-        UserNetworkManager.shared.getUser(userID: userID) { result, statusCode, error in
-            if let user = result?.user {
-                self.otherUserIntroduction = user.introduction ?? "無簡介"
-                self.otherUserName = user.name
-            }
-            group.leave()
-        }
-    }
-    
-    private func getUserImage(group: DispatchGroup) {
-        group.enter()
-        ImageNetworkManager.shared.getImageURLByUserID(userID: userID) { result, statusCode, error in
-            guard let result = result, let imageURL = result.image?.imageURL else {
-                self.otherUserImage = UIImage(named: "userDefault")
-                return
-            }
-            ImageNetworkManager.shared.downloadOrLoadImage(imageURL: imageURL) { data, error in
-                if let data = data {
-                    self.otherUserImage = UIImage(data: data)
-                }
-                group.leave()
-            }
-        }
-        
-    }
-    
-    // MARK: - Get article lists
-    func getCollectedArticle() {
-        if userID != 0 {
-            ArticleNetworkManager.shared.getCollectedArticle(userID: userID) { result, statusCode, error in
-                if let articles = result?.articles {
-                    ArticleManager.shared.myCollectedArticle = articles
-                    DispatchQueue.main.async {
-                        self.myCollectionTableVC?.tableView.reloadData()
-                    }
-                }
-            }
-        }
-    }
-    
-    private func getMyArticle() {
-        if userID != 0 {
-            ArticleNetworkManager.shared.getMyArticle(userID: userID) { result, statusCode, error in
-                if let articles = result?.articles {
-                    ArticleManager.shared.myArticle = articles
-                    
-                    let articleCount = ArticleManager.shared.myArticle.count
-                    let content = "有\(articleCount)篇文章"
-                    self.howManyArticle.text = content
-                    DispatchQueue.main.async {
-                        self.myArticleTableVC?.tableView.reloadData()
-                    }
-                }
-            }
-        }
-    }
-    
-    // MARK: - Setup childViewController
-    private func setupChildViewControllers() {
-        for child in children {
-            if let childVC = child as? MyArticleTableVC {
-                myArticleTableVC = childVC
-            }
-            if let childVC = child as? MyCollectionTableVC {
-                myCollectionTableVC = childVC
-            }
-        }
-    }
-
-    // MARK: - Notification
-    private func registerNotifications() {
-        NotificationCenter.default.addObserver(self, selector: #selector(loginSuccess), name: NSNotification.Name("userDidLogin"), object: nil)
-        NotificationCenter.default.addObserver(self, selector: #selector(postContentSuccess), name: NSNotification.Name("postContentSuccess"), object: nil)
-        NotificationCenter.default.addObserver(self, selector: #selector(editContentSuccess), name: NSNotification.Name("editContentSuccess"), object: nil)
-        NotificationCenter.default.addObserver(self, selector: #selector(userProfileDidUpdate), name: NSNotification.Name("userProfileDidUpdate"), object: nil)
-    }
-    
-
     // MARK: - Navigation
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         

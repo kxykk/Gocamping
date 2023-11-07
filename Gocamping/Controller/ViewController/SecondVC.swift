@@ -6,11 +6,12 @@
 //
 
 import UIKit
+import MBProgressHUD
 
 class SecondViewController: UIViewController {
     
     @IBOutlet weak var searchCampsBar: UISearchBar!
-    @IBOutlet weak var SecondTableView: SecondTableView!
+    @IBOutlet weak var SecondTableView: UITableView!
     
     var noResultsLabel: UILabel!
     let tableViewContainer = UIView()
@@ -18,26 +19,28 @@ class SecondViewController: UIViewController {
     // MARK: - Lifecycle
     override func viewDidLoad() {
         super.viewDidLoad()
+        initialSetup()
+        fetchCampsData()
+    }
+    
+    // MARK: - Initial Setup
+    private func initialSetup() {
         setupSearchBar()
         setupTableViewContainer()
         setupTableView()
         setupNoResultsLabel()
-        fetchCampsData()
-        self.view.backgroundColor = UIColor.peachCream
+        setupBackgroundColor()
     }
     
     private func setupSearchBar() {
         searchCampsBar.backgroundImage = UIImage()
         searchCampsBar.searchTextField.backgroundColor = .white
         searchCampsBar.searchTextField.layer.borderWidth = 0.0
-        searchCampsBar.shadow()
         searchCampsBar.delegate = self
     }
     
     private func setupTableViewContainer() {
         tableViewContainer.frame = CGRect(x: 0, y: searchCampsBar.frame.maxY, width: self.view.bounds.width, height: self.view.bounds.height - searchCampsBar.frame.maxY)
-        tableViewContainer.backgroundColor = .clear
-        tableViewContainer.shadow()
         self.view.addSubview(tableViewContainer)
     }
     
@@ -55,70 +58,71 @@ class SecondViewController: UIViewController {
         noResultsLabel.textColor = .gray
         noResultsLabel.isHidden = true
         SecondTableView.addSubview(noResultsLabel)
-        self.view.bringSubviewToFront(noResultsLabel)
     }
     
-
+    private func setupBackgroundColor() {
+        self.view.backgroundColor = UIColor.peachCream
+    }
     
-    // MARK: - Get camps
+    // MARK: - Fetch all camps
     private func fetchCampsData() {
         self.mbProgressHUD(text: "載入中...")
-        CampNetworkManager.shared.getCamps { result, statusCode, error in
-            if let error = error {
-                assertionFailure("Get camps error: \(error)")
-                return
-            }
-            if let camps = result?.camps {
-                CampManager.shared.camps = camps
-                DispatchQueue.main.async {
-                    self.hideProgressedHUD()
-                    self.SecondTableView.reloadData()
-                }
+        CampNetworkManager.shared.getCamps { [weak self] result, statusCode, error in
+            guard let self = self else { return }
+            guard let camps = result?.camps else { return }
+            disableTrace()
+            
+            CampManager.shared.camps = camps
+            DispatchQueue.main.async {
+                self.hideProgressedHUD()
+                self.SecondTableView.reloadData()
             }
         }
     }
-    
-    // MARK: - End editing
-    override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
-        self.view.endEditing(true)
-    }
 }
 
-// MARK: - UISearchBarDelegate
+// MARK: - Search camps
 extension SecondViewController: UISearchBarDelegate {
     
     func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
-        
+            
         self.mbProgressHUD(text: "搜尋中...")
         SecondTableView.isHidden = true
+            
         let minimumShowTime = DispatchTime.now() + 0.5
-        
-        CampNetworkManager.shared.searchCamps(keyword: searchText) { result, statusCode, error in
-            if let error = error {
-                assertionFailure("Search camps error: \(error)")
-                return
-            }
+            
+        CampNetworkManager.shared.searchCamps(keyword: searchText) { [weak self] result, statusCode, _ in
+            guard let self = self else { return }
+            disableTrace()
+                
             if let camps = result?.camps {
-                CampManager.shared.camps = camps
                 DispatchQueue.main.asyncAfter(deadline: minimumShowTime) {
-                    self.hideProgressedHUD()
-                    self.SecondTableView.isHidden = false
-                    self.noResultsLabel.isHidden = true
-                    self.SecondTableView.tableFooterView = nil
-                    self.SecondTableView.reloadData()
+                    self.handleSuccessfulSearch(camps: camps)
                 }
-            }
-            if statusCode == 404 {
+            } else if statusCode == 404 {
                 DispatchQueue.main.asyncAfter(deadline: minimumShowTime) {
-                    CampManager.shared.camps = []
-                    self.hideProgressedHUD()
-                    self.SecondTableView.isHidden = false
-                    self.noResultsLabel.isHidden = false
-                    self.SecondTableView.tableFooterView = self.noResultsLabel
-                    self.SecondTableView.reloadData()
+                    self.handleNotFound()
                 }
             }
         }
     }
-}
 
+    // MARK: - Search Successfully
+    private func handleSuccessfulSearch(camps: [Camp]) {
+        CampManager.shared.camps = camps
+        self.hideProgressedHUD()
+        self.SecondTableView.isHidden = false
+        self.noResultsLabel.isHidden = true
+        self.SecondTableView.reloadData()
+    }
+
+    // MARK: - Search Fail
+    private func handleNotFound() {
+        CampManager.shared.camps = []
+        self.hideProgressedHUD()
+        self.SecondTableView.isHidden = false
+        self.noResultsLabel.isHidden = false
+        self.SecondTableView.reloadData()
+    }
+
+}

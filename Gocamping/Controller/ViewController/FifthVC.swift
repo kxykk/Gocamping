@@ -134,6 +134,7 @@ class FifthViewController: UIViewController, MFMailComposeViewControllerDelegate
     @IBAction func deleteAccountBtnPressed(_ sender: Any) {
         let userID = UserDefaults.standard.integer(forKey: userIDKey)
         if userID == 0 {
+            disableTrace()
             ShowMessageManager.shared.showToastGlobal(message: "您尚未登入!")
         } else {
             ShowMessageManager.shared.showDeleteAlert(on: self, title: "刪除帳號", message: "確定刪除帳號嗎？") {self.deleteUserSuccessfully()}
@@ -168,6 +169,7 @@ class FifthViewController: UIViewController, MFMailComposeViewControllerDelegate
     // MARK: - Mail
     private func sendMail() {
         if MFMailComposeViewController.canSendMail() {
+            disableTrace()
             let mailComposeViewController = MFMailComposeViewController()
             mailComposeViewController.mailComposeDelegate = self
             mailComposeViewController.setToRecipients([email])

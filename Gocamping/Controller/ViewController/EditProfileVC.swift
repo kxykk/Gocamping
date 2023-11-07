@@ -92,6 +92,7 @@ class EditProfileVC: UIViewController {
         alert.addAction(library)
         alert.addAction(cancel)
         present(alert, animated: true)
+        disableTrace()
     }
     
     // MARK: - Update user introduction
@@ -130,6 +131,7 @@ extension EditProfileVC: UIImagePickerControllerDelegate, UINavigationController
     }
     
     func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
+        disableTrace()
         
         guard let type = info[.mediaType] as? String else {
             assertionFailure("Invalid Media Type.")
@@ -168,6 +170,7 @@ extension EditProfileVC: UIImagePickerControllerDelegate, UINavigationController
         print("userID\(userID)")
         let imageSortNumber = 0
         let imageType = "user"
+        disableTrace()
         
         ImageNetworkManager.shared.uploadImage(articleID: nil, userID: userID, campID: nil, imageSortNumber: imageSortNumber, imageType: imageType, imageData: imageData) { result, statusCode, error in
             if let error = error {
@@ -177,7 +180,6 @@ extension EditProfileVC: UIImagePickerControllerDelegate, UINavigationController
             if let imageURL = result?.image?.imageURL {
                 UserDefaults.standard.set(imageURL, forKey: imageURLKey)
                 try? CacheManager.shared.save(data: imageData, filename: imageURL)
-                print(":::::\(imageURL)")
             }
         }
     }

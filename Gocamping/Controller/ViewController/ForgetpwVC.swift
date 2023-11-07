@@ -22,6 +22,7 @@ class ForgetpasswordVC: UIViewController, MFMailComposeViewControllerDelegate {
     @IBAction func sendEmailBtnPressed(_ sender: Any) {
             guard let email = accountTextField.text, email != "" else {
                 ShowMessageManager.shared.showToastGlobal( message: "請輸入正確的帳號(信箱)")
+                disableTrace()
                 return
             }
             UserNetworkManager.shared.searchUser(email: email) { result, statusCode, error in

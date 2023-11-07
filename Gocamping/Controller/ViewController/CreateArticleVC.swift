@@ -28,6 +28,7 @@ class CreateArticleVC: UIViewController, UIImagePickerControllerDelegate & UINav
         let imagePicker = UIImagePickerController()
         imagePicker.delegate = self
         present(imagePicker, animated: true)
+        disableTrace()
     }
     
     @IBAction func confirmBtnPressed(_ sender: Any) {
@@ -72,6 +73,7 @@ class CreateArticleVC: UIViewController, UIImagePickerControllerDelegate & UINav
         let imageType = "title"
         let imageSortNumber = 0
             ImageNetworkManager.shared.uploadImage(articleID: articleID, userID: nil, campID: nil, imageSortNumber: imageSortNumber, imageType: imageType, imageData: imageData) { result, status, error in
+                disableTrace()
                 if let error = error {
                     ShowMessageManager.shared.showToastGlobal(message: "上傳照片失敗！")
                     self.activityIndicator.stopAnimating()

@@ -31,6 +31,7 @@ class EditArticleVC: UIViewController, EditArticleDelegate {
             if let childVC = child as? EditArticleTableVC {
                 editTableViewController = childVC
                 editTableViewController?.editArticleDelegate = self
+                disableTrace()
             }
         }
     }
@@ -64,6 +65,7 @@ class EditArticleVC: UIViewController, EditArticleDelegate {
     private func postContents() {
         let articleID = ArticleManager.shared.createArticleID
         ContentNetworkManager.shared.postContent(articleID: articleID, contents: contents) { result, status, error in
+            disableTrace()
             if let error = error {
                 ShowMessageManager.shared.showToastGlobal(message: "新增文章內容失敗！")
                 return
@@ -94,6 +96,7 @@ class EditArticleVC: UIViewController, EditArticleDelegate {
         if segue.identifier == "editSegue",
            let editArticleTableVC = segue.destination as? EditArticleTableVC{
             if isFromEdit {
+                disableTrace()
                 editArticleTableVC.articleID = articleID
                 editArticleTableVC.isFromEdit = true
             } else {

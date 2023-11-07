@@ -6,11 +6,10 @@
 //
 
 import UIKit
-import GoogleMaps
-import Firebase
-import FirebaseDatabase
+//import Firebase
+//import FirebaseDatabase
 
-@main
+//@main
 class AppDelegate: UIResponder, UIApplicationDelegate {
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
@@ -18,7 +17,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         //GMSServices.provideAPIKey("AIzaSyDVJHn2Xi5nhzoeXtq3dGi4FSsFMyU-RE0")
         (sleep(1) != 0)
     
-        FirebaseApp.configure()
+//        FirebaseApp.configure()
             
 //        ServeoManager.shared.serveoGroup.enter()
 //        let ref = Database.database().reference()

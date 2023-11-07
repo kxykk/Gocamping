@@ -67,7 +67,7 @@ class RegisterVC: UIViewController, SFSafariViewControllerDelegate {
     }
     
     @IBAction func registeBtnPressed(_ sender: Any) {
-        
+        disableTrace()
         guard validateInputs() else {
             return
         }
@@ -135,6 +135,7 @@ class RegisterVC: UIViewController, SFSafariViewControllerDelegate {
             } else {
                 self.registerDelegate?.registerSuccess()
                 self.navigationController?.popViewController(animated: true)
+                disableTrace()
             }
         }
     }

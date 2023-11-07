@@ -96,11 +96,11 @@ class BaseNetworkManager {
             
         case .success(let result):
             print("Success with: \(result)")
-            completion?(result,statusCode,nil)
+            completion?(result, statusCode, nil)
             
         case .failure(let error):
             print("Fail with: \(error)")
-            completion?(nil,statusCode,error)
+            completion?(nil, statusCode, error)
             
         }
         

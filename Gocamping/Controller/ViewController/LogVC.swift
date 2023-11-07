@@ -12,6 +12,7 @@ class LogVC: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
+        disableTrace()
 
     }
 

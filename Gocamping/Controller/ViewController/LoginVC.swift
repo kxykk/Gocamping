@@ -49,6 +49,7 @@ class LoginVC: UIViewController {
     @IBAction func showBtnPressed(_ sender: UIButton) {
         
         var config = showBtnPressed.configuration?.updated(for: sender)
+        disableTrace()
         
         if passwordTextField.isSecureTextEntry {
             passwordTextField.isSecureTextEntry = false
@@ -117,6 +118,7 @@ class LoginVC: UIViewController {
     
     private func getUserImage(userID: Int, completion: @escaping (String?) -> Void) {
         
+        disableTrace()
         ImageNetworkManager.shared.getImageURLByUserID(userID: userID) { result, statusCode, error in
             guard let result = result, let imageURL = result.image?.imageURL else{
                 completion(nil)

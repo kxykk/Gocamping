@@ -17,7 +17,7 @@ class FourthViewController: UIViewController {
         NotificationCenter.default.addObserver(self, selector: #selector(updateUserViews), name: NSNotification.Name("userDidLogin"), object: nil)
         
         NotificationCenter.default.addObserver(self, selector: #selector(loginSuccess), name: NSNotification.Name("userDidLogin"), object: nil)
-
+        disableTrace()
         updateUserViews()
 
     }
